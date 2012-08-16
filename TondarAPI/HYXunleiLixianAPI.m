@@ -37,6 +37,9 @@
 #define DEFAULT_USER_AGENT  @"User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2"
 #define DEFAULT_REFERER @"http://lixian.vip.xunlei.com/"
 
+
+
+
 /**
  *  登陆方法
  */
@@ -187,12 +190,13 @@
         siteData=[redirectURLrequest responseString];
 
     }else {
-        NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=%d",aUserID,aST]];
+        NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=%ld",aUserID,aST]];
         //获取task页面内容
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
         [request startSynchronous];
         siteData=[request responseString];
     }
+
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
     if (siteData&&([PhraseElements GDriveID:siteData].length>0)) {
         [self setCookieWithDomain:@"." Key:@"gdriveid" Value:[PhraseElements GDriveID:siteData]];
@@ -256,6 +260,7 @@
     if (siteData) {
         NSString *re=@"^fill_bt_list\\((.+)\\)\\s*$";
         NSString *s=[siteData stringByMatching:re capture:1];
+        
         NSDictionary *dic=[s objectFromJSONString];
         NSDictionary *result=[dic objectForKey:@"Result"];
         //dcid Value

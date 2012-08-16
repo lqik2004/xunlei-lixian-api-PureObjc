@@ -39,4 +39,5 @@ typedef enum{
 -(NSString *) addNormalTask:(NSString *)url;
 -(BOOL) deleteTasks:(NSArray *)ids;
 -(BOOL) addYunTaskWithFileSize:(NSString*) size downloadURL:(NSString*) url dcid:(NSString*) cid fileName:(NSString*) aName Quality:(YUNZHUANMAQuality) q;
+-(NSString *)userID;
 @end
