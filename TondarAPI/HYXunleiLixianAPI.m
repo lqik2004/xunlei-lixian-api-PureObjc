@@ -196,6 +196,7 @@
         [request startSynchronous];
         siteData=[request responseString];
     }
+
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
     if (siteData&&([PhraseElements GDriveID:siteData].length>0)) {
         [self setCookieWithDomain:@"." Key:@"gdriveid" Value:[PhraseElements GDriveID:siteData]];
@@ -259,6 +260,7 @@
     if (siteData) {
         NSString *re=@"^fill_bt_list\\((.+)\\)\\s*$";
         NSString *s=[siteData stringByMatching:re capture:1];
+        
         NSDictionary *dic=[s objectFromJSONString];
         NSDictionary *result=[dic objectForKey:@"Result"];
         //dcid Value
