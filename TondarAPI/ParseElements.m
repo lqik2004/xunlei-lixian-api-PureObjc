@@ -22,10 +22,10 @@
  */
 
 
-#import "PhraseElements.h"
+#import "ParseElements.h"
 #import "RegexKitLite.h"
 
-@implementation PhraseElements
+@implementation ParseElements
 
 +(NSArray *) taskPageData:(NSString *)orignData{
     //获得已经完成和已经过期Task列表汇总信息
@@ -98,16 +98,6 @@
         return @"未知信息";
     }
 }
-//获取下一页内容
-+(NSString *) nextPageContent:(NSString *)taskContent{
-    NSString *re=@"<li\\s+class=\"next\"><a\\s+href=\"([^\"]+)\">[^<>]*</a></li>";
-    NSString *result=[taskContent stringByMatching:re capture:1];
-    if(result){
-        return result;
-    }else {
-        return @"未知信息";
-    }
-}
 
 //获取GdriveID
 +(NSString *) GDriveID:(NSString *) taskHTMLOrignData{
@@ -163,6 +153,16 @@
 +(NSString *) GCID:(NSString *)taskDownLoadURL{
     NSString *rex=@"&g=([^&]*)&";
     NSString *r=[taskDownLoadURL stringByMatching:rex capture:1];
+    return r;
+}
+
+//获得下一页部分URL
+/*
+ href="/user_task?userid=642109&st=4&p=2&stype=0"
+ */
++(NSString*) nextPageSubURL:(NSString *) currentPageData{
+    NSString *rex=@"<li\\s*class=\"next\"><a\\s*href=\"([^\"]+)\">[^<>]*</a></li>";
+    NSString *r=[currentPageData stringByMatching:rex capture:1];
     return r;
 }
 @end

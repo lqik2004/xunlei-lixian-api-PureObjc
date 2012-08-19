@@ -23,8 +23,8 @@
 * 支持批量任务添加
 * 整理代码，重构
 * 去掉一些开源库的依赖
-******************
-###使用迅雷离线API的项目
+******************  
+###使用迅雷离线API的项目  
 * 迅雷离线 for iOS
 
 如果你使用了迅雷离线API，可以和我联系添加到这里
@@ -50,13 +50,23 @@
 ![图示1](http://ww4.sinaimg.cn/large/62d85d3dtw1dvybqxgbt3j.jpg )  
 关于开源库的使用，当时为了开发的方便加入了三个开源库能够让我用最快的时间开发出来，把主要精力放在写正则上，现在iOS和Mac OS X对JSON和正则的支持也很不错，所以可能会去掉这两个开源库，用起来方便一些。
 
+#####特别注意：如果你是从别的地方获取的[**asi-http-request**](https://github.com/pokeb/asi-http-request/)，那么需要修改一处代码以支持中文。
+把  
+[self setDefaultResponseEncoding:NSISO**Latin1**StringEncoding];  
+改成  
+[self setDefaultResponseEncoding:NS**UTF8**StringEncoding];    
+
+详细操作[点击这里](https://github.com/lqik2004/xunlei-lixian-api-PureObjc/commit/25dd032334adeff60e906c75c8dcc6ecad241026)
 ####源文件结构说明
 迅雷离线API包含了10个文件  
 对外调用实际上只需要两个，HYXunleiLixianAPI和XunleiItemInfo  
 HYXunleiLixianAPI 提供了获取任务列表，添加任务删除任务等功能  
 XunleiItemInfo 提供了任务返回信息（包含任务名称，dcid等）
 
-具体的使用指南或者Demo我会尽快更新，最近比较懒，其实看看代码也就知道的差不多了。
+*******************
+###更新日志  
+* 2012-8-19 重写了接口  
+
 *******************
 ###反馈问题
 有任何问题可以和lqik2004#gmail.com进行联系  

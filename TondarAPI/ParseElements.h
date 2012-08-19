@@ -21,10 +21,14 @@
  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ 这个文件中的方法几乎不需要手动调用
+ 正常的情况下你不需要使用任何其中的方法
+ */
 
 #import <Foundation/Foundation.h>
 
-@interface PhraseElements : NSObject
+@interface ParseElements : NSObject
 
 +(NSArray *) taskPageData:(NSString *)orignData;
 
@@ -34,10 +38,10 @@
 +(NSString *) taskRetainDays:(NSString *)taskContent;
 +(NSString *) taskAddTime:(NSString *)taskContent;
 +(NSString *) taskDownlaodNormalURL:(NSString *)taskContent;
-+(NSString *) nextPageContent:(NSString *)taskContent;
 +(NSString *) GDriveID:(NSString *) orignData;
 +(NSString *) taskType:(NSString *)taskContent;
 +(NSString *) DCID:(NSString *)taskContent;
 +(NSString *) GCID:(NSString *)taskDownLoadURL;
 +(NSMutableDictionary *)taskInfo:(NSString *)taskContent;
++(NSString*) nextPageSubURL:(NSString *) currentPageData;
 @end

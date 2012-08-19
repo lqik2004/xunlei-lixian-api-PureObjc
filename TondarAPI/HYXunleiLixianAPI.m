@@ -25,11 +25,18 @@
 #import "HYXunleiLixianAPI.h"
 #import "md5.h"
 #import "ASIFormDataRequest.h"
-#import "PhraseElements.h"
+#import "ParseElements.h"
 #import "JSONKit.h"
 #import "RegexKitLite.h"
 #import "URlEncode.h"
 #import "XunleiItemInfo.h"
+typedef enum {
+    TLTAll,
+    TLTDownloadding,
+    TLTComplete,
+    TLTOutofDate,
+    TLTDeleted
+} TaskListType;
 
 @implementation HYXunleiLixianAPI
 
@@ -37,9 +44,7 @@
 #define DEFAULT_USER_AGENT  @"User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2"
 #define DEFAULT_REFERER @"http://lixian.vip.xunlei.com/"
 
-
-
-
+#pragma mark - Login/LogOut Methods
 /**
  *  登陆方法
  */
@@ -87,11 +92,11 @@
     NSString *currentTime=[self currentTimeString];
     //NSLog(@"%@",currentTime);
     NSString *checkUrlString=[NSString stringWithFormat:@"http://login.xunlei.com/check?u=%@&cachetime=%@",aUserName,currentTime];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:checkUrlString] 
-                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData 
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:checkUrlString]
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                          timeoutInterval:3];
     
-    [NSURLConnection sendSynchronousRequest:request 
+    [NSURLConnection sendSynchronousRequest:request
                           returningResponse:nil
                                       error:nil];
     NSString *vCode;
@@ -105,11 +110,65 @@
     }else {
         vCode=[[vCode componentsSeparatedByString:@":"] objectAtIndex:1];
         NSLog(@"%@",vCode);
-
+        
     }
     return vCode;
 }
 
+/*
+ *迅雷的登陆会过期，有时需要检验一下是否登陆。
+ *现在采用的方法比较“重”，效率可能会低一些，但更稳妥直接
+ *现在备选的两种方法，第一同样访问taskPage然后检查页面大小判断是否真的登陆
+ *第二种方法检查Cookies，但是还未找到判断哪个Cookie
+ */
+-(BOOL) isLogin{
+    BOOL result=NO;
+    if([self tasksWithStatus:4]){
+        result=YES;
+    }
+    return result;
+}
+
+/*
+ *有两种方法可以实现logout
+ *第一种清空Cookies，第二种访问http://dynamic.vip.xunlei.com/login/indexlogin_contr/logout/，本方法采用了第一种速度快，现在也没发现什么问题。
+ */
+-(void)logOut{
+    NSArray* keys=@[@"vip_isvip",@"lx_sessionid",@"vip_level",@"lx_login",@"dl_enable",@"in_xl",@"ucid",@"lixian_section",@"sessionid",@"usrname",@"nickname",@"usernewno",@"userid",@"gdriveid"];
+    for(NSString* i in keys){
+        [self setCookieWithKey:i Value:@""];
+    }
+}
+
+#pragma mark - GDriveID
+//GdriveID是一个关键Cookie，在下载文件的时候需要用它进行验证
+-(NSString*)GDriveID{
+    return [self cookieValueWithName:@"gdriveid"];
+}
+-(BOOL) isGDriveIDInCookie{
+    BOOL result=NO;
+    if([self GDriveID]){
+        result=YES;
+    }
+    return result;
+}
+
+-(void) setGdriveID:(NSString*) gdriveid{
+    [self setCookieWithKey:@"gdriveid" Value:gdriveid];
+}
+
+
+#pragma mark - Referer
+//获得Referer
+-(NSString*) refererWithStringFormat{
+    NSString* urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@",[self userID]];
+    return urlString;
+}
+-(NSURL*) refererWithURLFormat{
+    return [NSURL URLWithString:[self refererWithStringFormat]];
+}
+
+#pragma mark - Cookies Methods
 //从cookies中取得指定名称的值
 -(NSString *) cookieValueWithName:(NSString *)aName{
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -124,22 +183,7 @@
 }
 
 //设置Cookies
--(NSHTTPCookie *) setCookieWithDomain:(NSString *) domain Key:(NSString *) key Value:(NSString *) value{
-    /*
-    NSArray *keys=[NSArray arrayWithObjects:NSHTTPCookieDomain,NSHTTPCookieName,NSHTTPCookieValue,NSHTTPCookieVersion,nil];
-    NSArray *values=[NSArray arrayWithObjects:domain,key,value,@"0",nil];
-    NSDictionary *cookieDic=[NSDictionary dictionaryWithObjects:values forKeys:keys];
-    NSHTTPCookie *cookie=[NSHTTPCookie cookieWithProperties:cookieDic];
-    
-    NSHTTPCookieStorage *cookieStorage=[NSHTTPCookieStorage sharedHTTPCookieStorage];
-    [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
-    [cookieStorage setCookie:cookie];
-    
-    for(NSHTTPCookie *cookie in [cookieStorage cookies]){
-        NSLog(@"%@",cookie);
-    }
-    return YES;
-     */
+-(NSHTTPCookie *) setCookieWithKey:(NSString *) key Value:(NSString *) value{
     //创建一个cookie
     NSDictionary *properties = [[NSMutableDictionary alloc] init];
     [properties setValue:value forKey:NSHTTPCookieValue];
@@ -155,29 +199,133 @@
     
     return cookie;
 }
-
-
-//取得当前UTC时间，并转换成13位数字字符
--(NSString *) currentTimeString{
-    double UTCTime=[[NSDate date] timeIntervalSince1970];
-    NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
-    currentTime=[[currentTime componentsSeparatedByString:@"."] objectAtIndex:0];
-    
-    return currentTime;
+//查询Cookie是否存在
+-(BOOL) hasCookie:(NSString*) aKey{
+    BOOL result=NO;
+    if([self cookieValueWithName:aKey]){
+        result=YES;
+    }
+    return result;
 }
+
+
+#pragma mark - UserID,UserNmae
 //获取当前UserID
 -(NSString *)userID{
     return ([self cookieValueWithName:@"userid"]);
 }
 
+-(NSString *)userName{
+    return ([self cookieValueWithName:@"usernewno"]);
+}
+
+
+
+
+#pragma mark - Public Normal Task Methods
 //获取主任务页内容
-/*
- * st=0 包含 正在下载和下载完成
- * st=2 包含已经完成嗯任务
- * st=4 包含 正在下载 已经完成 和 已经过期的任务 由于过期任务的页面格式和正在下载和已经下载的格式有所不同
- * 所以如果要获得所有任务那么尽量不适用st=4来获得，而是使用st=0加上已经过期的任务
- */
--(NSMutableArray *) taskPageWithUserid:(NSString *) aUserID status:(NSUInteger) aST{
+//公共方法
+-(NSMutableArray*) readAllCompleteTasks{
+    return [self readAllTasksWithStat:TLTComplete];
+}
+-(NSMutableArray*) readCompleteTasksWithPage:(NSUInteger) pg{
+    return [self tasksWithStatus:TLTComplete andPage:pg];
+}
+-(NSMutableArray*) readAllDownloadingTasks{
+    return [self readAllTasksWithStat:TLTDownloadding];
+}
+-(NSMutableArray*) readDownloadingTasksWithPage:(NSUInteger) pg{
+    return [self tasksWithStatus:TLTDownloadding andPage:pg];
+}
+-(NSMutableArray *) readAllOutofDateTasks{
+    return [self readAllTasksWithStat:TLTOutofDate];
+}
+-(NSMutableArray *) readOutofDateTasksWithPage:(NSUInteger) pg{
+    return [self tasksWithStatus:TLTOutofDate andPage:pg];
+}
+-(NSMutableArray*) readAllDeletedTasks{
+    return [self readAllTasksWithStat:TLTDeleted];
+}
+-(NSMutableArray*) readDeletedTasksWithPage:(NSUInteger) pg{
+    return [self tasksWithStatus:TLTDeleted andPage:pg];
+}
+#pragma mark - Private Normal Task Methods
+//私有方法
+-(NSMutableArray *) tasksWithStatus:(TaskListType) listType{
+    NSString* userid=[self userID];
+    NSURL *url;
+    switch (listType) {
+        case TLTAll:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=0",userid]];
+            break;
+        case TLTComplete:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=2",userid]];
+            break;
+        case TLTDownloadding:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=1",userid]];
+            break;
+        case TLTOutofDate:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=1&userid=%@",userid]];
+            break;
+        case TLTDeleted:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=0userid=%@",userid]];
+            break;
+        default:
+            break;
+    }
+    return [self tasksWithURL:url];
+}
+-(NSMutableArray *) tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg{
+    NSString* userid=[self userID];
+    NSURL *url;
+    switch (listType) {
+        case TLTAll:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=0&p=%ld",userid,pg]];
+            break;
+        case TLTComplete:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=2&p=%ld",userid,pg]];
+            break;
+        case TLTDownloadding:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=1&p=%ld",userid,pg]];
+            break;
+        case TLTOutofDate:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=1&userid=%@&p=%ld",userid,pg]];
+            break;
+        case TLTDeleted:
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?userid=%@&p=%ld",userid,pg]];
+            break;
+        default:
+            break;
+    }
+
+    return [self tasksWithURL:url];
+}
+-(NSMutableArray *) readAllTasksWithStat:(TaskListType) listType{
+    NSUInteger pg=1;
+    NSMutableArray *mutableArray=[self tasksWithStatus:listType andPage:pg];
+    NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
+    while (!mutableArray) {
+        [allTaskArray addObjectsFromArray:mutableArray];
+        pg++;
+        mutableArray=[self tasksWithStatus:listType andPage:pg];
+    }
+    return allTaskArray;
+}
+//只适用于“已过期”，“已删除”任务
+
+//通用方法
+-(NSURL*) getNextPageURL:(NSString *) currentPageData{
+    NSString *url=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com%@",[ParseElements nextPageSubURL:currentPageData]];
+    return [NSURL URLWithString:url];
+}
+-(BOOL) hasNextPage:(NSString*) currrentPageData{
+    BOOL result=NO;
+    if([self getNextPageURL:currrentPageData]){
+        result=YES;
+    }
+    return result;
+}
+-(NSMutableArray *) tasksWithURL:(NSURL *) taskURL{
      NSString *siteData;
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
@@ -190,19 +338,19 @@
         siteData=[redirectURLrequest responseString];
 
     }else {
-        NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=%ld",aUserID,aST]];
         //获取task页面内容
-        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:taskURL];
         [request startSynchronous];
         siteData=[request responseString];
     }
 
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
-    if (siteData&&([PhraseElements GDriveID:siteData].length>0)) {
-        [self setCookieWithDomain:@"." Key:@"gdriveid" Value:[PhraseElements GDriveID:siteData]];
+    if (siteData&&([ParseElements GDriveID:siteData].length>0)) {
+        //设置Gdriveid
+        [self setGdriveID:[ParseElements GDriveID:siteData]];
         /*
          *===============
-         *Phrase Html
+         *Parse Html
          *===============
         */
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
@@ -214,12 +362,12 @@
             XunleiItemInfo *info=[XunleiItemInfo new];
             NSString *taskContent=[tmp objectAtIndex:0];
             
-            NSMutableDictionary *taskInfoDic=[PhraseElements taskInfo:taskContent];
-            NSString* taskLoadingProcess=[PhraseElements taskLoadProcess:taskContent];
-            NSString* taskRetainDays=[PhraseElements taskRetainDays:taskContent];
-            NSString* taskAddTime=[PhraseElements taskAddTime:taskContent];
-            NSString* taskType=[PhraseElements taskType:taskContent];
-            NSString* taskReadableSize=[PhraseElements taskSize:taskContent];
+            NSMutableDictionary *taskInfoDic=[ParseElements taskInfo:taskContent];
+            NSString* taskLoadingProcess=[ParseElements taskLoadProcess:taskContent];
+            NSString* taskRetainDays=[ParseElements taskRetainDays:taskContent];
+            NSString* taskAddTime=[ParseElements taskAddTime:taskContent];
+            NSString* taskType=[ParseElements taskType:taskContent];
+            NSString* taskReadableSize=[ParseElements taskSize:taskContent];
             
             info.taskid=[taskInfoDic objectForKey:@"id"];
             info.name=[taskInfoDic objectForKey:@"taskname"];
@@ -244,8 +392,9 @@
         return nil;
     }
     //NSLog(@"%@",elements);
-   }
+}
 
+#pragma mark - BT Task
 //获取BT页面内容(hashid 也就是dcid)
 -(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid{
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
@@ -298,11 +447,25 @@
     //return elements;
 }
 
+#pragma mark - YunZhuanMa Methods
+-(NSMutableArray*) readAllYunTasks{
+    NSUInteger pg=1;
+    NSMutableArray *mutableArray=[self readYunTasksWithPage:pg];
+    NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
+    while (!mutableArray) {
+        [allTaskArray addObjectsFromArray:mutableArray];
+        pg++;
+        mutableArray=[self readYunTasksWithPage:pg];
+    }
+    return allTaskArray;
+}
+
 //获取云转码页面信息
--(NSMutableArray *) yunTaskPageWithUserID:(NSString *) aUserID{
+-(NSMutableArray *) readYunTasksWithPage:(NSUInteger) pg{
+    NSString* aUserID=[self userID];
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
-    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com//cloud?userid=%@&cst=0",aUserID]];
+    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com//cloud?userid=%@&p=%ld",aUserID,pg]];
     ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:requestURL];
     [request startSynchronous];
     NSString *data=[request responseString];
@@ -316,12 +479,12 @@
             XunleiItemInfo *info=[XunleiItemInfo new];
             NSString *taskContent=[tmp objectAtIndex:0];
             
-            NSMutableDictionary *taskInfoDic=[PhraseElements taskInfo:taskContent];
-            NSString* taskLoadingProcess=[PhraseElements taskLoadProcess:taskContent];
-            NSString* taskRetainDays=[PhraseElements taskRetainDays:taskContent];
-            NSString* taskAddTime=[PhraseElements taskAddTime:taskContent];
-            NSString* taskType=[PhraseElements taskType:taskContent];
-            NSString* taskReadableSize=[PhraseElements taskSize:taskContent];
+            NSMutableDictionary *taskInfoDic=[ParseElements taskInfo:taskContent];
+            NSString* taskLoadingProcess=[ParseElements taskLoadProcess:taskContent];
+            NSString* taskRetainDays=[ParseElements taskRetainDays:taskContent];
+            NSString* taskAddTime=[ParseElements taskAddTime:taskContent];
+            NSString* taskType=[ParseElements taskType:taskContent];
+            NSString* taskReadableSize=[ParseElements taskSize:taskContent];
             
             info.taskid=[taskInfoDic objectForKey:@"id"];
             info.name=[taskInfoDic objectForKey:@"cloud_taskname"];
@@ -348,7 +511,7 @@
 }
 
 
-
+#pragma mark - Add Task
 //add megnet task
 -(NSString *) addMegnetTask:(NSString *) url{
     NSString *cid;
@@ -517,13 +680,40 @@
     return [commitRequest responseString];
 }
 
-
+#pragma mark - Delete Task
 //Delete tasks
--(BOOL) deleteTasks:(NSArray *)ids{
+-(BOOL) deleteSingleTaskByID:(NSString*) id{
+    BOOL result=NO;
+    result=[self deleteTasksByArray:@[id]];
+    return result;
+}
+-(BOOL) deleteTasksByIDArray:(NSArray *)ids{
+    BOOL result=NO;
+    result=[self deleteTasksByArray:ids];
+    return result;
+}
+-(BOOL) deleteSingleTaskByXunleiItemInfo:(XunleiItemInfo*) aInfo{
+    BOOL result=NO;
+    result=[self deleteTasksByArray:@[aInfo]];
+    return result;
+}
+-(BOOL) deleteTasksByXunleiItemInfoArray:(NSArray *)ids{
+    BOOL result=NO;
+    result=[self deleteTasksByArray:ids];
+    return result;
+}
+-(BOOL) deleteTasksByArray:(NSArray *)ids{
     BOOL returnResult=NO;
     NSMutableString *idString=[NSMutableString string];
-    for(NSString *i in ids){
-        [idString appendString:i];
+    for(id i in ids){
+        if([i isKindOfClass:[XunleiItemInfo class]]){
+           [idString appendString:[(XunleiItemInfo*)i taskid]];
+        }else if([i isKindOfClass:[NSString class]]){
+            [idString appendString:i];
+        }else{
+            NSLog(@"Warning!!deleteTasksByArray:UnKnown Type!");
+            //[idString appendString:i];
+        }
         [idString appendString:@","];
     }
     NSString *encodeIDString=[URlEncode encodeToPercentEscapeString:idString];
@@ -544,9 +734,10 @@
     return returnResult;
 }
 
+#pragma mark - Yun ZhuanMa Methods
 //Yun Zhuan Ma
 -(BOOL) addYunTaskWithFileSize:(NSString*) size downloadURL:(NSString*) url dcid:(NSString*) cid fileName:(NSString*) aName Quality:(YUNZHUANMAQuality) q{
-    NSString *gcid=[PhraseElements GCID:url];
+    NSString *gcid=[ParseElements GCID:url];
     NSURL *requestURL=[NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/cloud_build_task/"];
     NSString *detailTaskPostValue=[NSString stringWithFormat:@"[{\"section_type\":\"c7\",\"filesize\":\"%@\",\"gcid\":\"%@\",\"cid\":\"%@\",\"filename\":\"%@\"}]",size,gcid,cid,aName];
     ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:requestURL];
@@ -564,5 +755,26 @@
         }
     }
     return NO;
+}
+
+#pragma mark - Other Useful Methods
+-(XunleiItemInfo *) getTaskWithTaskID:(NSString*) aTaskID{
+    XunleiItemInfo *r=nil;
+    NSMutableArray *array=[self readAllTasksWithStat:TLTAll];
+    for(XunleiItemInfo* i in array){
+        if(i.taskid==aTaskID){
+            r=i;
+        }
+    }
+    return r;
+}
+
+//取得当前UTC时间，并转换成13位数字字符
+-(NSString *) currentTimeString{
+    double UTCTime=[[NSDate date] timeIntervalSince1970];
+    NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
+    currentTime=[[currentTime componentsSeparatedByString:@"."] objectAtIndex:0];
+    
+    return currentTime;
 }
 @end

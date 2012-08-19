@@ -11,8 +11,8 @@
 		020E1F4C15DCF40B00FF99ED /* HYXunleiLixianAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F4A15DCF40B00FF99ED /* HYXunleiLixianAPI.m */; };
 		020E1F5015DCF41500FF99ED /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F4E15DCF41400FF99ED /* md5.h */; };
 		020E1F5115DCF41500FF99ED /* md5.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F4F15DCF41500FF99ED /* md5.m */; };
-		020E1F5415DCF42300FF99ED /* PhraseElements.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F5215DCF42100FF99ED /* PhraseElements.h */; };
-		020E1F5515DCF42300FF99ED /* PhraseElements.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F5315DCF42200FF99ED /* PhraseElements.m */; };
+		020E1F5415DCF42300FF99ED /* ParseElements.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F5215DCF42100FF99ED /* ParseElements.h */; };
+		020E1F5515DCF42300FF99ED /* ParseElements.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F5315DCF42200FF99ED /* ParseElements.m */; };
 		020E1F5815DCF45F00FF99ED /* URlEncode.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F5615DCF45E00FF99ED /* URlEncode.h */; };
 		020E1F5915DCF45F00FF99ED /* URlEncode.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F5715DCF45F00FF99ED /* URlEncode.m */; };
 		020E1F5C15DCF46B00FF99ED /* XunleiItemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F5A15DCF46A00FF99ED /* XunleiItemInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,8 +68,8 @@
 		020E1F4A15DCF40B00FF99ED /* HYXunleiLixianAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYXunleiLixianAPI.m; sourceTree = "<group>"; };
 		020E1F4E15DCF41400FF99ED /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		020E1F4F15DCF41500FF99ED /* md5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = md5.m; sourceTree = "<group>"; };
-		020E1F5215DCF42100FF99ED /* PhraseElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhraseElements.h; sourceTree = "<group>"; };
-		020E1F5315DCF42200FF99ED /* PhraseElements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhraseElements.m; sourceTree = "<group>"; };
+		020E1F5215DCF42100FF99ED /* ParseElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseElements.h; sourceTree = "<group>"; };
+		020E1F5315DCF42200FF99ED /* ParseElements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseElements.m; sourceTree = "<group>"; };
 		020E1F5615DCF45E00FF99ED /* URlEncode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URlEncode.h; sourceTree = "<group>"; };
 		020E1F5715DCF45F00FF99ED /* URlEncode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URlEncode.m; sourceTree = "<group>"; };
 		020E1F5A15DCF46A00FF99ED /* XunleiItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XunleiItemInfo.h; sourceTree = "<group>"; };
@@ -194,8 +194,8 @@
 				020E1F4A15DCF40B00FF99ED /* HYXunleiLixianAPI.m */,
 				020E1F4E15DCF41400FF99ED /* md5.h */,
 				020E1F4F15DCF41500FF99ED /* md5.m */,
-				020E1F5215DCF42100FF99ED /* PhraseElements.h */,
-				020E1F5315DCF42200FF99ED /* PhraseElements.m */,
+				020E1F5215DCF42100FF99ED /* ParseElements.h */,
+				020E1F5315DCF42200FF99ED /* ParseElements.m */,
 				020E1F5615DCF45E00FF99ED /* URlEncode.h */,
 				020E1F5715DCF45F00FF99ED /* URlEncode.m */,
 				020E1F5A15DCF46A00FF99ED /* XunleiItemInfo.h */,
@@ -315,7 +315,7 @@
 				020E1F5C15DCF46B00FF99ED /* XunleiItemInfo.h in Headers */,
 				022D2F9C15C6DAEA003FC27E /* RegexKitLite.h in Headers */,
 				020E1F5015DCF41500FF99ED /* md5.h in Headers */,
-				020E1F5415DCF42300FF99ED /* PhraseElements.h in Headers */,
+				020E1F5415DCF42300FF99ED /* ParseElements.h in Headers */,
 				020E1F5815DCF45F00FF99ED /* URlEncode.h in Headers */,
 				020E1F7115DCF5A900FF99ED /* JSONKit.h in Headers */,
 				02C0669B15DCF64B008AF890 /* ASICacheDelegate.h in Headers */,
@@ -443,7 +443,7 @@
 				022D2F9D15C6DAEA003FC27E /* RegexKitLite.m in Sources */,
 				020E1F4C15DCF40B00FF99ED /* HYXunleiLixianAPI.m in Sources */,
 				020E1F5115DCF41500FF99ED /* md5.m in Sources */,
-				020E1F5515DCF42300FF99ED /* PhraseElements.m in Sources */,
+				020E1F5515DCF42300FF99ED /* ParseElements.m in Sources */,
 				020E1F5915DCF45F00FF99ED /* URlEncode.m in Sources */,
 				020E1F5D15DCF46B00FF99ED /* XunleiItemInfo.m in Sources */,
 				020E1F7215DCF5A900FF99ED /* JSONKit.m in Sources */,
