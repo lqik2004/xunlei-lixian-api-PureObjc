@@ -62,13 +62,13 @@ typedef enum{
 
 -(NSMutableArray*) readAllDownloadingTasks;
 -(NSMutableArray*) readDownloadingTasksWithPage:(NSUInteger) pg;
-
+/* //Some Problems Tempremoved
 -(NSMutableArray *) readAllOutofDateTasks;
 -(NSMutableArray *) readOutofDateTasksWithPage:(NSUInteger) pg;
 
 -(NSMutableArray*) readAllDeletedTasks;
 -(NSMutableArray*) readDeletedTasksWithPage:(NSUInteger) pg;
-
+*/
 #pragma mark - BT Task
 //BT任务列表
 -(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid;
@@ -91,7 +91,10 @@ typedef enum{
 #pragma mark - YunZhuanMa Task
 //云转码任务列表
 -(NSMutableArray*) readAllYunTasks;
--(NSMutableArray *) readYunTasksWithPage:(NSUInteger) pg;
+-(NSMutableArray *) readYunTasksWithPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPageBool;
 //添加任务到云转码
 -(BOOL) addYunTaskWithFileSize:(NSString*) size downloadURL:(NSString*) url dcid:(NSString*) cid fileName:(NSString*) aName Quality:(YUNZHUANMAQuality) q;
+//云转码删除任务
+-(BOOL) deleteYunTaskByID:(NSString*) anId;
+-(BOOL) deleteYunTasksByIDArray:(NSArray *)ids;
 @end

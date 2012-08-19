@@ -67,6 +67,11 @@ typedef enum {
     [request setUseSessionPersistence:YES];
     [request setUseCookiePersistence:YES];
     [request startSynchronous];
+    //完善所需要的cookies，并收到302响应跳转
+    NSString *timeStamp=[self currentTimeString];
+    NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
+    ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
+    [redirectURLrequest startSynchronous];
     //验证是否登陆成功
     NSString *userid=[self userID];
     if(userid.length>1){
@@ -229,25 +234,25 @@ typedef enum {
     return [self readAllTasksWithStat:TLTComplete];
 }
 -(NSMutableArray*) readCompleteTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTComplete andPage:pg];
+    return [self tasksWithStatus:TLTComplete andPage:pg retIfHasNextPage:NULL];
 }
 -(NSMutableArray*) readAllDownloadingTasks{
     return [self readAllTasksWithStat:TLTDownloadding];
 }
 -(NSMutableArray*) readDownloadingTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTDownloadding andPage:pg];
+    return [self tasksWithStatus:TLTDownloadding andPage:pg  retIfHasNextPage:NULL];
 }
 -(NSMutableArray *) readAllOutofDateTasks{
     return [self readAllTasksWithStat:TLTOutofDate];
 }
 -(NSMutableArray *) readOutofDateTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTOutofDate andPage:pg];
+    return [self tasksWithStatus:TLTOutofDate andPage:pg  retIfHasNextPage:NULL];
 }
 -(NSMutableArray*) readAllDeletedTasks{
     return [self readAllTasksWithStat:TLTDeleted];
 }
 -(NSMutableArray*) readDeletedTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTDeleted andPage:pg];
+    return [self tasksWithStatus:TLTDeleted andPage:pg  retIfHasNextPage:NULL];
 }
 #pragma mark - Private Normal Task Methods
 //私有方法
@@ -273,9 +278,9 @@ typedef enum {
         default:
             break;
     }
-    return [self tasksWithURL:url];
+    return [self tasksWithURL:url retIfHasNextPage:NULL];
 }
--(NSMutableArray *) tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg{
+-(NSMutableArray *) tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPage{
     NSString* userid=[self userID];
     NSURL *url;
     switch (listType) {
@@ -292,31 +297,37 @@ typedef enum {
             url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=1&userid=%@&p=%ld",userid,pg]];
             break;
         case TLTDeleted:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?userid=%@&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=0&userid=%@&p=%ld",userid,pg]];
             break;
         default:
             break;
     }
-
-    return [self tasksWithURL:url];
+    NSLog(@"%@",url);
+    return [self tasksWithURL:url retIfHasNextPage:hasNextPage];
 }
 -(NSMutableArray *) readAllTasksWithStat:(TaskListType) listType{
     NSUInteger pg=1;
-    NSMutableArray *mutableArray=[self tasksWithStatus:listType andPage:pg];
+    BOOL hasNP=NO;
     NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
-    while (!mutableArray) {
-        [allTaskArray addObjectsFromArray:mutableArray];
+    NSMutableArray *mArray=nil;
+    do {
+        mArray=[self tasksWithStatus:listType andPage:pg retIfHasNextPage:&hasNP];
+        [allTaskArray addObjectsFromArray:mArray];
         pg++;
-        mutableArray=[self tasksWithStatus:listType andPage:pg];
-    }
+    } while (hasNP);
     return allTaskArray;
 }
 //只适用于“已过期”，“已删除”任务
 
 //通用方法
 -(NSURL*) getNextPageURL:(NSString *) currentPageData{
-    NSString *url=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com%@",[ParseElements nextPageSubURL:currentPageData]];
-    return [NSURL URLWithString:url];
+    NSString *tmp=[ParseElements nextPageSubURL:currentPageData];
+    NSURL *url=nil;
+    if(tmp){
+        NSString *u=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com%@",tmp];
+        url=[NSURL URLWithString:u];
+    }
+    return url;
 }
 -(BOOL) hasNextPage:(NSString*) currrentPageData{
     BOOL result=NO;
@@ -325,7 +336,7 @@ typedef enum {
     }
     return result;
 }
--(NSMutableArray *) tasksWithURL:(NSURL *) taskURL{
+-(NSMutableArray *) tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool {
      NSString *siteData;
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
@@ -335,15 +346,17 @@ typedef enum {
         NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
         ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
         [redirectURLrequest startSynchronous];
-        siteData=[redirectURLrequest responseString];
-
+        //获取task页面内容
+        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:taskURL];
+        [request startSynchronous];
+        siteData=[request responseString];
     }else {
         //获取task页面内容
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:taskURL];
         [request startSynchronous];
         siteData=[request responseString];
     }
-
+//    NSLog(@"data:%@",siteData);
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
     if (siteData&&([ParseElements GDriveID:siteData].length>0)) {
         //设置Gdriveid
@@ -353,6 +366,10 @@ typedef enum {
          *Parse Html
          *===============
         */
+        //检查是否还有下一页
+        if(hasNextPageBool){
+            *hasNextPageBool=[self hasNextPage:siteData];
+        }
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
         NSString *tmpD1=[siteData stringByMatching:re1 capture:1];
         NSString *re2=@"<div\\s*class=\"rw_list\"[\\s\\S]*?<!--\\s*rw_list\\s*-->";
@@ -450,26 +467,31 @@ typedef enum {
 #pragma mark - YunZhuanMa Methods
 -(NSMutableArray*) readAllYunTasks{
     NSUInteger pg=1;
-    NSMutableArray *mutableArray=[self readYunTasksWithPage:pg];
+    BOOL hasNP=NO;
     NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
-    while (!mutableArray) {
-        [allTaskArray addObjectsFromArray:mutableArray];
+    NSMutableArray *mArray=nil;
+    do {
+        mArray=[self readYunTasksWithPage:pg retIfHasNextPage:&hasNP];
+        [allTaskArray addObjectsFromArray:mArray];
         pg++;
-        mutableArray=[self readYunTasksWithPage:pg];
-    }
+    } while (hasNP);
     return allTaskArray;
 }
 
 //获取云转码页面信息
--(NSMutableArray *) readYunTasksWithPage:(NSUInteger) pg{
+-(NSMutableArray *) readYunTasksWithPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPageBool{
     NSString* aUserID=[self userID];
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
-    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com//cloud?userid=%@&p=%ld",aUserID,pg]];
+    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/cloud?userid=%@&p=%ld",aUserID,pg]];
     ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:requestURL];
     [request startSynchronous];
     NSString *data=[request responseString];
     if(data){
+        if(hasNextPageBool){
+            //检查是否还有下一页
+            *hasNextPageBool=[self hasNextPage:data];
+        }
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
         NSString *tmpD1=[data stringByMatching:re1 capture:1];
         NSString *re2=@"<div\\s*class=\"rw_list\"[\\s\\S]*?<!--\\s*rw_list\\s*-->";
@@ -500,7 +522,7 @@ typedef enum {
             info.status=[[taskInfoDic objectForKey:@"cloud_d_status"] integerValue];
             //info.originalURL=[taskInfoDic objectForKey:@"f_url"];
             //info.ifvod=[taskInfoDic objectForKey:@"ifvod"];
-            
+            //NSLog(@"Yun Name:%@",info.name);
             [elements addObject:info];
         }
         //return info
@@ -755,6 +777,30 @@ typedef enum {
         }
     }
     return NO;
+}
+-(BOOL) deleteYunTaskByID:(NSString*) anId{
+    return [self deleteYunTasksByIDArray:@[anId]];
+}
+
+-(BOOL) deleteYunTasksByIDArray:(NSArray *)ids{
+    BOOL returnResult=NO;
+    NSString *jsontext=[ids JSONString];
+    NSURL *url=[NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/cloud_delete_task"];
+    ASIFormDataRequest*request = [ASIFormDataRequest requestWithURL:url];
+    
+    [request setPostValue:jsontext forKey:@"tasks"];
+    [request setUseSessionPersistence:YES];
+    [request setUseCookiePersistence:YES];
+    [request startSynchronous];
+    NSString *response=[request responseString];
+    if(response){
+        NSLog(response);
+        NSDictionary *resJson=[response objectFromJSONString];
+        if([[resJson objectForKey:@"result"] intValue]==0){
+            returnResult=YES;
+        }
+    }
+    return returnResult;
 }
 
 #pragma mark - Other Useful Methods
