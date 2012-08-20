@@ -62,13 +62,13 @@ typedef enum{
 
 -(NSMutableArray*) readAllDownloadingTasks;
 -(NSMutableArray*) readDownloadingTasksWithPage:(NSUInteger) pg;
-/* //Some Problems Tempremoved
+/* //Some Problems Tempremoved*/
 -(NSMutableArray *) readAllOutofDateTasks;
 -(NSMutableArray *) readOutofDateTasksWithPage:(NSUInteger) pg;
 
 -(NSMutableArray*) readAllDeletedTasks;
 -(NSMutableArray*) readDeletedTasksWithPage:(NSUInteger) pg;
-*/
+
 #pragma mark - BT Task
 //BT任务列表
 -(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid;

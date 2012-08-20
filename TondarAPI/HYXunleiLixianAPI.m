@@ -278,7 +278,7 @@ typedef enum {
         default:
             break;
     }
-    return [self tasksWithURL:url retIfHasNextPage:NULL];
+    return [self tasksWithURL:url retIfHasNextPage:NULL listType:listType];
 }
 -(NSMutableArray *) tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPage{
     NSString* userid=[self userID];
@@ -303,7 +303,7 @@ typedef enum {
             break;
     }
     NSLog(@"%@",url);
-    return [self tasksWithURL:url retIfHasNextPage:hasNextPage];
+    return [self tasksWithURL:url retIfHasNextPage:hasNextPage listType:listType];
 }
 -(NSMutableArray *) readAllTasksWithStat:(TaskListType) listType{
     NSUInteger pg=1;
@@ -336,10 +336,16 @@ typedef enum {
     }
     return result;
 }
--(NSMutableArray *) tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool {
+-(NSMutableArray *) tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool listType:(TaskListType) listtype{
      NSString *siteData;
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
+    //设置lx_nf_all Cookie
+    //不得不喷一下这个东西了，不设置这个Cookie，返回网页有问题，不是没有内容，而是他妈的不全，太傻逼了，浪费了我一个小时的时间
+    //而且这个东西只是再查询“已经删除”和“已经过期”才会用
+    //迅雷离线的网页怎么做的，飘忽不定
+    [self setCookieWithKey:@"lx_nf_all" Value:@"page_check_all%3Dhistory%26fltask_all_guoqi%3D1%26class_check%3D0%26page_check%3Dtask%26fl_page_id%3D0%26class_check_new%3D0%26set_tab_status%3D11"];
+    
     if(![self cookieValueWithName:@"lx_login"]){
         //完善所需要的cookies，并收到302响应跳转
         NSString *timeStamp=[self currentTimeString];
@@ -372,13 +378,18 @@ typedef enum {
         }
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
         NSString *tmpD1=[siteData stringByMatching:re1 capture:1];
-        NSString *re2=@"<div\\s*class=\"rw_list\"[\\s\\S]*?<!--\\s*rw_list\\s*-->";
+        NSString *re2=nil;
+        if(listtype==TLTAll|listtype==TLTComplete|listtype==TLTDownloadding){
+            re2=@"<div\\s*class=\"rw_list\"[\\s\\S]*?<!--\\s*rw_list\\s*-->";
+        }else if (listtype==TLTOutofDate|listtype==TLTDeleted){
+            re2=@"<div\\s*class=\"rw_list\"[\\s\\S]*?<input\\s*id=\"d_tasktype\\d+\"\\s*type=\"hidden\"\\s*value=[^>]*>";
+        }
         NSArray *allTaskArray=[tmpD1 arrayOfCaptureComponentsMatchedByRegex:re2];
         for(NSArray *tmp in allTaskArray){
             //初始化XunleiItemInfo
             XunleiItemInfo *info=[XunleiItemInfo new];
             NSString *taskContent=[tmp objectAtIndex:0];
-            
+//            NSLog(@"content:%@",taskContent);
             NSMutableDictionary *taskInfoDic=[ParseElements taskInfo:taskContent];
             NSString* taskLoadingProcess=[ParseElements taskLoadProcess:taskContent];
             NSString* taskRetainDays=[ParseElements taskRetainDays:taskContent];

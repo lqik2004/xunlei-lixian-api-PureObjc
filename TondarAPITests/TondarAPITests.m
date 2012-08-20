@@ -45,6 +45,7 @@
         }
         */
         //读取云转码第一页,并删除第一个，再打印第一页
+        /*
         NSMutableArray* ma=[TondarAPI readYunTasksWithPage:1 retIfHasNextPage:NULL];
         for (XunleiItemInfo *task in ma) {
             NSLog(@"%@-------%@", task.taskid,task.name);
@@ -53,16 +54,21 @@
         for (XunleiItemInfo *task in [TondarAPI readYunTasksWithPage:1 retIfHasNextPage:NULL]) {
             NSLog(@"%@-------%@", task.taskid,task.name);
         }
+         */
         /*
         //获取全部云转码任务
         for (XunleiItemInfo *task in [TondarAPI readAllYunTasks]) {
             NSLog(@"%@", task.name);
         }
          */
+        for (XunleiItemInfo *task in [TondarAPI readAllDeletedTasks]) {
+            NSLog(@"%@", task.name);
+        }
     } else {
         NSLog(@"LOGIN FAIL");
     }
-    
+}
+-(void) tst{
     
 }
 
