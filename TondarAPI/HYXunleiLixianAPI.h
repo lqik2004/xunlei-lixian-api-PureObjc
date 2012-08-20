@@ -23,6 +23,7 @@
 
 #import <Foundation/Foundation.h>
 @class XunleiItemInfo;
+@class KuaiItemInfo;
 typedef enum{
     QMiddleQuality=1,
     QLowQuality=2,
@@ -97,4 +98,12 @@ typedef enum{
 //云转码删除任务
 -(BOOL) deleteYunTaskByID:(NSString*) anId;
 -(BOOL) deleteYunTasksByIDArray:(NSArray *)ids;
+
+#pragma mark - Xunlei KuaiChuan ...迅雷快传
+//通过提供KuaiItemInfo来直接创建迅雷离线地址，KuaiItemInfo可以通过getKuaiItemInfos:获得
+-(NSString*) generateXunleiURLStringByKuaiItemInfo:(KuaiItemInfo*) info;
+//生成KuaiItemInfoArray
+-(NSArray*) getKuaiItemInfos:(NSURL*) kuaiURL;
+//添加快传页面的连接到迅雷离线
+-(BOOL) addAllKuaiTasksToLixianByURL:(NSURL*) kuaiURL;
 @end

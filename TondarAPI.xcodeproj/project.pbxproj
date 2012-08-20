@@ -51,6 +51,9 @@
 		02F155D615C547220054EF51 /* TondarAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F155B815C547220054EF51 /* TondarAPI.framework */; };
 		02F155DC15C547220054EF51 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 02F155DA15C547220054EF51 /* InfoPlist.strings */; };
 		02F155DF15C547220054EF51 /* TondarAPITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F155DE15C547220054EF51 /* TondarAPITests.m */; };
+		A88FDA9C15E22E1800BCB116 /* Kuai.h in Headers */ = {isa = PBXBuildFile; fileRef = A88FDA9A15E22E1800BCB116 /* Kuai.h */; };
+		A88FDA9D15E22E1800BCB116 /* Kuai.m in Sources */ = {isa = PBXBuildFile; fileRef = A88FDA9B15E22E1800BCB116 /* Kuai.m */; };
+		A88FDA9E15E22E1800BCB116 /* Kuai.m in Sources */ = {isa = PBXBuildFile; fileRef = A88FDA9B15E22E1800BCB116 /* Kuai.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +118,8 @@
 		02F155DB15C547220054EF51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		02F155DD15C547220054EF51 /* TondarAPITests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TondarAPITests.h; sourceTree = "<group>"; };
 		02F155DE15C547220054EF51 /* TondarAPITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TondarAPITests.m; sourceTree = "<group>"; };
+		A88FDA9A15E22E1800BCB116 /* Kuai.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kuai.h; sourceTree = "<group>"; };
+		A88FDA9B15E22E1800BCB116 /* Kuai.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kuai.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +205,8 @@
 				020E1F5715DCF45F00FF99ED /* URlEncode.m */,
 				020E1F5A15DCF46A00FF99ED /* XunleiItemInfo.h */,
 				020E1F5B15DCF46A00FF99ED /* XunleiItemInfo.m */,
+				A88FDA9A15E22E1800BCB116 /* Kuai.h */,
+				A88FDA9B15E22E1800BCB116 /* Kuai.m */,
 			);
 			name = Tondar;
 			sourceTree = "<group>";
@@ -329,6 +336,7 @@
 				02C066A815DCF64B008AF890 /* ASIInputStream.h in Headers */,
 				02C066AA15DCF64B008AF890 /* ASINetworkQueue.h in Headers */,
 				02C066AC15DCF64B008AF890 /* ASIProgressDelegate.h in Headers */,
+				A88FDA9C15E22E1800BCB116 /* Kuai.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +462,7 @@
 				02C066A515DCF64B008AF890 /* ASIHTTPRequest.m in Sources */,
 				02C066A915DCF64B008AF890 /* ASIInputStream.m in Sources */,
 				02C066AB15DCF64B008AF890 /* ASINetworkQueue.m in Sources */,
+				A88FDA9D15E22E1800BCB116 /* Kuai.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +471,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				02F155DF15C547220054EF51 /* TondarAPITests.m in Sources */,
+				A88FDA9E15E22E1800BCB116 /* Kuai.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

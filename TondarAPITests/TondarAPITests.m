@@ -30,7 +30,7 @@
     NSLog(@"TEST START");
     HYXunleiLixianAPI *TondarAPI = [[HYXunleiLixianAPI alloc] init];
 #define USERNAME @"lqik2004"
-#define pwd @"YOURPASSWORD"
+#define pwd @"YOUPASSWORD"
     if ([TondarAPI loginWithUsername:USERNAME Password:pwd]) {
         NSLog(@"LOGIN SUCCESS: %@", [TondarAPI userID]);
         //获取全部已经完成任务
@@ -61,8 +61,17 @@
             NSLog(@"%@", task.name);
         }
          */
+        /*
         for (XunleiItemInfo *task in [TondarAPI readAllDeletedTasks]) {
             NSLog(@"%@", task.name);
+        }
+         */
+        NSURL *kuaiURL=[NSURL URLWithString:@"http://kuai.xunlei.com/d/NVICEUTSJWIO"];
+//        [TondarAPI addAllKuaiTasksToLixianByURL:kuaiURL];
+        NSArray* infos=[TondarAPI getKuaiItemInfos:kuaiURL];
+        for(KuaiItemInfo* i in infos){
+            NSLog(@"Name:%@<<<<<<<<<<<Url:%@",i.name,i.urlString);
+            NSLog(@"\n%@",[TondarAPI generateXunleiURLStringByKuaiItemInfo:i]);
         }
     } else {
         NSLog(@"LOGIN FAIL");

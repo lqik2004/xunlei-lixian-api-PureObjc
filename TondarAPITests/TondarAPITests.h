@@ -7,6 +7,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import "Kuai.h"
 
 @interface TondarAPITests : SenTestCase
 

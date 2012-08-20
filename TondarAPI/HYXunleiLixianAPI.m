@@ -30,6 +30,8 @@
 #import "RegexKitLite.h"
 #import "URlEncode.h"
 #import "XunleiItemInfo.h"
+#import "Kuai.h"
+
 typedef enum {
     TLTAll,
     TLTDownloadding,
@@ -812,6 +814,27 @@ typedef enum {
         }
     }
     return returnResult;
+}
+#pragma mark - Xunlei KuaiChuan ...迅雷快传
+-(BOOL) addAllKuaiTasksToLixianByURL:(NSURL*) kuaiURL{
+    BOOL result=NO;
+    Kuai *k=[Kuai new];
+    NSArray *infos=[k kuaiItemInfoArrayByKuaiURL:kuaiURL];
+    for(KuaiItemInfo *i in infos){
+        NSString *url=i.urlString;
+        NSString* t=[self addNormalTask:url];
+        if(t) result=YES;
+    }
+    return result;
+}
+-(NSArray*) getKuaiItemInfos:(NSURL*) kuaiURL{
+    Kuai *k=[Kuai new];
+    return [k kuaiItemInfoArrayByKuaiURL:kuaiURL];
+}
+
+-(NSString*) generateXunleiURLStringByKuaiItemInfo:(KuaiItemInfo*) info{
+    Kuai *k=[Kuai new];
+    return [k generateLixianUrl:info];
 }
 
 #pragma mark - Other Useful Methods
