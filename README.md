@@ -3,7 +3,7 @@
 本项目旨在提供一个纯由Objective-C写成的迅雷离线API，方便在Mac OS X和iOS上开发相应项目。  
 **TondarAPI已经通过了iOS/Mac OS X兼容性测试** 
 ###名称释义
-**Tondar**为波斯语（Persian），意味闪电  
+**Tondar**为波斯语（Persian），意为闪电  
 ###功能概述
 * 迅雷离线账户登陆  
 * 获取任务列表（返回返回每个任务的详细信息，参见XunleiItemInfo）  
@@ -16,6 +16,7 @@
 * 删除云转码任务
 * 云点播
 * 一键添加到迅雷快传
+* 对迅雷，旋风，Flashget多种专有连接的下载支持
 
 ###TODO
 * 完善获取“保留时间”方法  
@@ -68,6 +69,7 @@ XunleiItemInfo 提供了任务返回信息（包含任务名称，dcid等）
 Kuai中对外调用为其中的KuaiItemInfo类，包含了从迅雷快传提取任务的各种信息
 *******************
 ###更新日志  
+* 2012-8-22 v0.5 fix some bugs && 增加了对迅雷，旋风，Flashget专有下载链接格式的支持
 * 2012-8-21 v0.4.1 fix some bugs && update README
 * 2012-8-20 v0.4 released!，增加了迅雷快传
 * 2012-8-19 重写了接口  
