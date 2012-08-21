@@ -84,9 +84,13 @@ typedef enum{
 -(BOOL) deleteSingleTaskByXunleiItemInfo:(XunleiItemInfo*) aInfo;
 -(BOOL) deleteTasksByXunleiItemInfoArray:(NSArray *)ids;
 #pragma mark - Pause Task
-//TO DO
+-(BOOL) pauseMultiTasksByTaskID:(NSArray*) ids;
+-(BOOL) pauseTaskWithID:(NSString*) taskID;
+-(BOOL) pauseTask:(XunleiItemInfo*) info;
+-(BOOL) pauseMutiTasksByTaskItemInfo:(NSArray*) infos;
 #pragma mark - ReStart Task
-//TO DO
+-(BOOL) restartTask:(XunleiItemInfo*) info;
+-(BOOL) restartMutiTasksByTaskItemInfo:(NSArray*) infos;
 #pragma mark - Rename Task
 //TO DO
 #pragma mark - YunZhuanMa Task

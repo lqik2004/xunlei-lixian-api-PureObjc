@@ -27,10 +27,11 @@
 
 - (void)testExample
 {
+
     NSLog(@"TEST START");
     HYXunleiLixianAPI *TondarAPI = [[HYXunleiLixianAPI alloc] init];
 #define USERNAME @"lqik2004"
-#define pwd @"1239492339"
+#define pwd @"PWD"
     if ([TondarAPI loginWithUsername:USERNAME Password:pwd]) {
         NSLog(@"LOGIN SUCCESS: %@", [TondarAPI userID]);
         //获取全部已经完成任务
@@ -87,16 +88,28 @@
             NSLog(@"%@", task.retainDays);
         }
          */
+        /*
 //        测试文件名不完整bug
         for (XunleiItemInfo *task in [TondarAPI readAllCompleteTasks]) {
             NSLog(@"%@", task.name);
         }
+         */
+        /*
+//        测试暂停任务
+        for (XunleiItemInfo *task in [TondarAPI readDownloadingTasksWithPage:1]) {
+            NSLog(@"%@-----------%@-------%u", task.taskid,task.name,task.status);
+            if([TondarAPI pauseTask:task]){
+                NSLog(@"Pause Done!!");
+            }
+            [TondarAPI restartTask:task];
+        }
+         */
+//        添加任务
+        [TondarAPI addNormalTask:@"thunder://QUFlZDJrOi8vfGZpbGV8JUU1JUE0JThEJUU0JUJCJTg3JUU4JTgwJTg1JUU4JTgxJTk0JUU3JTlCJTlGLlRoZS5BdmVuZ2Vycy4yMDEyLkRWRC1STVZCLSVFNCVCQSVCQSVFNCVCQSVCQSVFNSVCRCVCMSVFOCVBNyU4NiVFNSU4RSU5RiVFNSU4OCU5QiVFNyVCRiVCQiVFOCVBRiU5MSVFNCVCOCVBRCVFOCU4QiVCMSVFNSU4RiU4QyVFOCVBRiVBRCVFNSVBRCU5NyVFNSVCOSU5NS5ybXZifDY4NDU2MzAxMnxlMTA2MDU2YTQ1NTkyYThjYTUzYmVhODMxZjk1NDJlMHxoPWZoZWM0cHpobjd6YzRoN2Y0bG02cHZvbWN0aTJ1cjdmfC9aWg=="];
     } else {
         NSLog(@"LOGIN FAIL");
     }
 }
--(void) tst{
-    
-}
+
 
 @end

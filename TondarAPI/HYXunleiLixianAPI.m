@@ -31,6 +31,7 @@
 #import "URlEncode.h"
 #import "XunleiItemInfo.h"
 #import "Kuai.h"
+#import "ConvertURL.h"
 
 typedef enum {
     TLTAll,
@@ -632,7 +633,9 @@ typedef enum {
 
 //add normal task(http,ed2k...)
 -(NSString *) addNormalTask:(NSString *)url{
-    NSString *enUrl=[URlEncode encodeToPercentEscapeString:url];
+    ConvertURL *curl=[ConvertURL new];
+    NSString *decodeurl=[curl urlUnmask:url];
+    NSString *enUrl=[URlEncode encodeToPercentEscapeString:decodeurl];
     NSString *timestamp=[self _currentTimeString];
     NSString *callURLString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%@&random=%@&tcache=%@",enUrl,timestamp,timestamp];
     NSURL *callURL=[NSURL URLWithString:callURLString];
@@ -773,7 +776,59 @@ typedef enum {
     }
     return returnResult;
 }
-
+#pragma mark - Pause Task
+-(BOOL) pauseMultiTasksByTaskID:(NSArray*) ids{
+    BOOL returnResult=NO;
+    NSString* idString=[ids componentsJoinedByString:@","];
+    NSString *requestString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_pause?tid=%@&uid=%@",idString,[self userID]];
+    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:[NSURL URLWithString:requestString]];
+    [request startSynchronous];
+    NSString* responsed=[request responseString];
+    if(responsed){
+        returnResult=YES;
+    }
+    return returnResult;
+}
+-(BOOL) pauseTaskWithID:(NSString*) taskID{
+    return [self pauseMultiTasksByTaskID:@[ taskID ]];
+}
+-(BOOL) pauseTask:(XunleiItemInfo*) info{
+    return [self pauseTaskWithID:info.taskid];
+}
+-(BOOL) pauseMutiTasksByTaskItemInfo:(NSArray*) infos{
+    NSMutableArray* tids=[NSMutableArray arrayWithCapacity:0];
+    for(XunleiItemInfo *info in infos){
+        [tids addObject:[info taskid]];
+    }
+    return [self pauseMultiTasksByTaskID:tids];
+}
+#pragma mark - ReStart Task
+-(BOOL) restartTask:(XunleiItemInfo*) info{
+    return [self restartMutiTasksByTaskItemInfo:@[info]];
+}
+-(BOOL) restartMutiTasksByTaskItemInfo:(NSArray*) infos{
+    BOOL returnResult=YES;
+    for(XunleiItemInfo* info in infos){
+        NSString* callbackString=[NSString stringWithFormat:@"jsonp%@",[self _currentTimeString]];
+        NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=%@",callbackString]];
+    
+        ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:requestURL];
+        [commitRequest setPostValue:info.taskid forKey:@"id[]"];
+        [commitRequest setPostValue:info.dcid forKey:@"cid[]"];
+        [commitRequest setPostValue:info.originalURL forKey:@"url[]"];
+        [commitRequest setPostValue:info.name forKey:@"taskname[]"];
+        [commitRequest setPostValue:[NSString stringWithFormat:@"%u",info.status] forKey:@"download_status[]"];
+        [commitRequest setPostValue:@"1" forKey:@"type"];
+        [commitRequest setPostValue:@"0" forKey:@"class_id"];
+        [commitRequest setUseSessionPersistence:YES];
+        [commitRequest setUseCookiePersistence:YES];
+        [commitRequest startSynchronous];
+        if (![commitRequest responseString]) {
+            returnResult=NO;
+        }
+    }
+    return returnResult;
+}
 #pragma mark - Yun ZhuanMa Methods
 //Yun Zhuan Ma
 -(BOOL) addYunTaskWithFileSize:(NSString*) size downloadURL:(NSString*) url dcid:(NSString*) cid fileName:(NSString*) aName Quality:(YUNZHUANMAQuality) q{

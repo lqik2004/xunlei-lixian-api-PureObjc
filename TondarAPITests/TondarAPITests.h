@@ -8,6 +8,7 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "Kuai.h"
+#import "ConvertURL.h"
 
 @interface TondarAPITests : SenTestCase
 

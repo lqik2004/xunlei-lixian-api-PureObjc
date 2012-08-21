@@ -51,6 +51,19 @@
 		02F155D615C547220054EF51 /* TondarAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F155B815C547220054EF51 /* TondarAPI.framework */; };
 		02F155DC15C547220054EF51 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 02F155DA15C547220054EF51 /* InfoPlist.strings */; };
 		02F155DF15C547220054EF51 /* TondarAPITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F155DE15C547220054EF51 /* TondarAPITests.m */; };
+		A83FEE7D15E3E23900FD8907 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = A83FEE7915E3E23900FD8907 /* NSData+Base64.h */; };
+		A83FEE7E15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
+		A83FEE7F15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
+		A83FEE8015E3E23900FD8907 /* NSString+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = A83FEE7B15E3E23900FD8907 /* NSString+Base64.h */; };
+		A83FEE8115E3E23900FD8907 /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7C15E3E23900FD8907 /* NSString+Base64.m */; };
+		A83FEE8215E3E23900FD8907 /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7C15E3E23900FD8907 /* NSString+Base64.m */; };
+		A83FEE8715E3E2AA00FD8907 /* ConvertURL.h in Headers */ = {isa = PBXBuildFile; fileRef = A83FEE8515E3E2AA00FD8907 /* ConvertURL.h */; };
+		A83FEE8815E3E2AA00FD8907 /* ConvertURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE8615E3E2AA00FD8907 /* ConvertURL.m */; };
+		A83FEE8915E3E2AA00FD8907 /* ConvertURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE8615E3E2AA00FD8907 /* ConvertURL.m */; };
+		A83FEE9015E3E5EF00FD8907 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F155D115C547220054EF51 /* SenTestingKit.framework */; };
+		A83FEE9A15E3E5EF00FD8907 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A83FEE9815E3E5EF00FD8907 /* InfoPlist.strings */; };
+		A83FEE9D15E3E5EF00FD8907 /* URLTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE9C15E3E5EF00FD8907 /* URLTesting.m */; };
+		A83FEEA315E3E7A100FD8907 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A83FEEA215E3E7A100FD8907 /* Cocoa.framework */; };
 		A88FDA9C15E22E1800BCB116 /* Kuai.h in Headers */ = {isa = PBXBuildFile; fileRef = A88FDA9A15E22E1800BCB116 /* Kuai.h */; };
 		A88FDA9D15E22E1800BCB116 /* Kuai.m in Sources */ = {isa = PBXBuildFile; fileRef = A88FDA9B15E22E1800BCB116 /* Kuai.m */; };
 		A88FDA9E15E22E1800BCB116 /* Kuai.m in Sources */ = {isa = PBXBuildFile; fileRef = A88FDA9B15E22E1800BCB116 /* Kuai.m */; };
@@ -118,6 +131,21 @@
 		02F155DB15C547220054EF51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		02F155DD15C547220054EF51 /* TondarAPITests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TondarAPITests.h; sourceTree = "<group>"; };
 		02F155DE15C547220054EF51 /* TondarAPITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TondarAPITests.m; sourceTree = "<group>"; };
+		A83FEE7915E3E23900FD8907 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		A83FEE7B15E3E23900FD8907 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		A83FEE7C15E3E23900FD8907 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		A83FEE8515E3E2AA00FD8907 /* ConvertURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvertURL.h; sourceTree = "<group>"; };
+		A83FEE8615E3E2AA00FD8907 /* ConvertURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvertURL.m; sourceTree = "<group>"; };
+		A83FEE8F15E3E5EF00FD8907 /* URLTesting.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = URLTesting.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A83FEE9115E3E5EF00FD8907 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		A83FEE9315E3E5EF00FD8907 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		A83FEE9715E3E5EF00FD8907 /* URLTesting-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "URLTesting-Info.plist"; sourceTree = "<group>"; };
+		A83FEE9915E3E5EF00FD8907 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A83FEE9B15E3E5EF00FD8907 /* URLTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLTesting.h; sourceTree = "<group>"; };
+		A83FEE9C15E3E5EF00FD8907 /* URLTesting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = URLTesting.m; sourceTree = "<group>"; };
+		A83FEE9E15E3E5EF00FD8907 /* URLTesting-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "URLTesting-Prefix.pch"; sourceTree = "<group>"; };
+		A83FEEA215E3E7A100FD8907 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		A88FDA9A15E22E1800BCB116 /* Kuai.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kuai.h; sourceTree = "<group>"; };
 		A88FDA9B15E22E1800BCB116 /* Kuai.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kuai.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,6 +169,15 @@
 				02F155D215C547220054EF51 /* SenTestingKit.framework in Frameworks */,
 				02F155D315C547220054EF51 /* Cocoa.framework in Frameworks */,
 				02F155D615C547220054EF51 /* TondarAPI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A83FEE8B15E3E5EF00FD8907 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83FEEA315E3E7A100FD8907 /* Cocoa.framework in Frameworks */,
+				A83FEE9015E3E5EF00FD8907 /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +221,7 @@
 		026EB2D515C54C5F0005909F /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				A83FEE8415E3E23D00FD8907 /* Base64 */,
 				02C066BF15DCFB22008AF890 /* ZZHTTPConnection */,
 				02C066BD15DCFB1A008AF890 /* RegexKitLite */,
 				020E1F7315DCF5AB00FF99ED /* JSONKit */,
@@ -207,6 +245,8 @@
 				020E1F5B15DCF46A00FF99ED /* XunleiItemInfo.m */,
 				A88FDA9A15E22E1800BCB116 /* Kuai.h */,
 				A88FDA9B15E22E1800BCB116 /* Kuai.m */,
+				A83FEE8515E3E2AA00FD8907 /* ConvertURL.h */,
+				A83FEE8615E3E2AA00FD8907 /* ConvertURL.m */,
 			);
 			name = Tondar;
 			sourceTree = "<group>";
@@ -232,8 +272,10 @@
 		02F155AC15C547220054EF51 = {
 			isa = PBXGroup;
 			children = (
+				A83FEEA215E3E7A100FD8907 /* Cocoa.framework */,
 				02F155C115C547220054EF51 /* TondarAPI */,
 				02F155D715C547220054EF51 /* TondarAPITests */,
+				A83FEE9515E3E5EF00FD8907 /* URLTesting */,
 				02F155BA15C547220054EF51 /* Frameworks */,
 				02F155B915C547220054EF51 /* Products */,
 			);
@@ -244,6 +286,7 @@
 			children = (
 				02F155B815C547220054EF51 /* TondarAPI.framework */,
 				02F155D015C547220054EF51 /* TondarAPITests.octest */,
+				A83FEE8F15E3E5EF00FD8907 /* URLTesting.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,6 +299,8 @@
 				02C066B015DCF700008AF890 /* SystemConfiguration.framework */,
 				02F155BB15C547220054EF51 /* Cocoa.framework */,
 				02F155D115C547220054EF51 /* SenTestingKit.framework */,
+				A83FEE9115E3E5EF00FD8907 /* UIKit.framework */,
+				A83FEE9315E3E5EF00FD8907 /* Foundation.framework */,
 				02F155BD15C547220054EF51 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -310,6 +355,37 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A83FEE8415E3E23D00FD8907 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				A83FEE7915E3E23900FD8907 /* NSData+Base64.h */,
+				A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */,
+				A83FEE7B15E3E23900FD8907 /* NSString+Base64.h */,
+				A83FEE7C15E3E23900FD8907 /* NSString+Base64.m */,
+			);
+			name = Base64;
+			sourceTree = "<group>";
+		};
+		A83FEE9515E3E5EF00FD8907 /* URLTesting */ = {
+			isa = PBXGroup;
+			children = (
+				A83FEE9B15E3E5EF00FD8907 /* URLTesting.h */,
+				A83FEE9C15E3E5EF00FD8907 /* URLTesting.m */,
+				A83FEE9615E3E5EF00FD8907 /* Supporting Files */,
+			);
+			path = URLTesting;
+			sourceTree = "<group>";
+		};
+		A83FEE9615E3E5EF00FD8907 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A83FEE9715E3E5EF00FD8907 /* URLTesting-Info.plist */,
+				A83FEE9815E3E5EF00FD8907 /* InfoPlist.strings */,
+				A83FEE9E15E3E5EF00FD8907 /* URLTesting-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -337,6 +413,9 @@
 				02C066AA15DCF64B008AF890 /* ASINetworkQueue.h in Headers */,
 				02C066AC15DCF64B008AF890 /* ASIProgressDelegate.h in Headers */,
 				A88FDA9C15E22E1800BCB116 /* Kuai.h in Headers */,
+				A83FEE7D15E3E23900FD8907 /* NSData+Base64.h in Headers */,
+				A83FEE8015E3E23900FD8907 /* NSString+Base64.h in Headers */,
+				A83FEE8715E3E2AA00FD8907 /* ConvertURL.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +459,24 @@
 			productReference = 02F155D015C547220054EF51 /* TondarAPITests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		A83FEE8E15E3E5EF00FD8907 /* URLTesting */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A83FEE9F15E3E5EF00FD8907 /* Build configuration list for PBXNativeTarget "URLTesting" */;
+			buildPhases = (
+				A83FEE8A15E3E5EF00FD8907 /* Sources */,
+				A83FEE8B15E3E5EF00FD8907 /* Frameworks */,
+				A83FEE8C15E3E5EF00FD8907 /* Resources */,
+				A83FEE8D15E3E5EF00FD8907 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = URLTesting;
+			productName = URLTesting;
+			productReference = A83FEE8F15E3E5EF00FD8907 /* URLTesting.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -403,6 +500,7 @@
 			targets = (
 				02F155B715C547220054EF51 /* TondarAPI */,
 				02F155CF15C547220054EF51 /* TondarAPITests */,
+				A83FEE8E15E3E5EF00FD8907 /* URLTesting */,
 			);
 		};
 /* End PBXProject section */
@@ -424,10 +522,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A83FEE8C15E3E5EF00FD8907 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83FEE9A15E3E5EF00FD8907 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		02F155CE15C547220054EF51 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		A83FEE8D15E3E5EF00FD8907 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -463,6 +582,9 @@
 				02C066A915DCF64B008AF890 /* ASIInputStream.m in Sources */,
 				02C066AB15DCF64B008AF890 /* ASINetworkQueue.m in Sources */,
 				A88FDA9D15E22E1800BCB116 /* Kuai.m in Sources */,
+				A83FEE7E15E3E23900FD8907 /* NSData+Base64.m in Sources */,
+				A83FEE8115E3E23900FD8907 /* NSString+Base64.m in Sources */,
+				A83FEE8815E3E2AA00FD8907 /* ConvertURL.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +594,17 @@
 			files = (
 				02F155DF15C547220054EF51 /* TondarAPITests.m in Sources */,
 				A88FDA9E15E22E1800BCB116 /* Kuai.m in Sources */,
+				A83FEE7F15E3E23900FD8907 /* NSData+Base64.m in Sources */,
+				A83FEE8215E3E23900FD8907 /* NSString+Base64.m in Sources */,
+				A83FEE8915E3E2AA00FD8907 /* ConvertURL.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A83FEE8A15E3E5EF00FD8907 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83FEE9D15E3E5EF00FD8907 /* URLTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,6 +631,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				02F155DB15C547220054EF51 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A83FEE9815E3E5EF00FD8907 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A83FEE9915E3E5EF00FD8907 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -616,6 +757,37 @@
 			};
 			name = Release;
 		};
+		A83FEEA015E3E5EF00FD8907 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "URLTesting/URLTesting-Prefix.pch";
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "URLTesting/URLTesting-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		A83FEEA115E3E5EF00FD8907 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "URLTesting/URLTesting-Prefix.pch";
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "URLTesting/URLTesting-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -645,6 +817,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		A83FEE9F15E3E5EF00FD8907 /* Build configuration list for PBXNativeTarget "URLTesting" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A83FEEA015E3E5EF00FD8907 /* Debug */,
+				A83FEEA115E3E5EF00FD8907 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
