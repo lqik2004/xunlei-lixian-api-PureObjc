@@ -51,11 +51,11 @@ typedef enum {
  *  登陆方法
  */
 -(BOOL) loginWithUsername:(NSString *) aName Password:(NSString *) aPassword{
-    NSString *vCode=[self verifyCode:aName];
+    NSString *vCode=[self _verifyCode:aName];
     if ([vCode compare:@"0"]==NSOrderedSame) {
         return NO;
     }
-    NSString *enPassword=[self encodePassword:aPassword withVerifyCode:vCode];
+    NSString *enPassword=[self _encodePassword:aPassword withVerifyCode:vCode];
     
     //第一步登陆，验证用户名密码
     NSURL *url = [NSURL URLWithString:LoginURL];
@@ -70,7 +70,7 @@ typedef enum {
     [request setUseCookiePersistence:YES];
     [request startSynchronous];
     //完善所需要的cookies，并收到302响应跳转
-    NSString *timeStamp=[self currentTimeString];
+    NSString *timeStamp=[self _currentTimeString];
     NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
     ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
     [redirectURLrequest startSynchronous];
@@ -84,7 +84,7 @@ typedef enum {
 }
 
 //加密密码
--(NSString *) encodePassword:(NSString *) aPassword withVerifyCode:(NSString *) aVerifyCode{
+-(NSString *) _encodePassword:(NSString *) aPassword withVerifyCode:(NSString *) aVerifyCode{
     NSString *enPwd_tmp=[md5 md5HexDigestwithString:([md5 md5HexDigestwithString:aPassword])];
     NSString *upperVerifyCode=[aVerifyCode uppercaseString];
     //join the two strings
@@ -95,8 +95,8 @@ typedef enum {
 }
 
 //获取验证码
--(NSString *) verifyCode:(NSString *) aUserName{
-    NSString *currentTime=[self currentTimeString];
+-(NSString *) _verifyCode:(NSString *) aUserName{
+    NSString *currentTime=[self _currentTimeString];
     //NSLog(@"%@",currentTime);
     NSString *checkUrlString=[NSString stringWithFormat:@"http://login.xunlei.com/check?u=%@&cachetime=%@",aUserName,currentTime];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:checkUrlString]
@@ -130,7 +130,7 @@ typedef enum {
  */
 -(BOOL) isLogin{
     BOOL result=NO;
-    if([self tasksWithStatus:4]){
+    if([self _tasksWithStatus:4]){
         result=YES;
     }
     return result;
@@ -233,32 +233,32 @@ typedef enum {
 //获取主任务页内容
 //公共方法
 -(NSMutableArray*) readAllCompleteTasks{
-    return [self readAllTasksWithStat:TLTComplete];
+    return [self _readAllTasksWithStat:TLTComplete];
 }
 -(NSMutableArray*) readCompleteTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTComplete andPage:pg retIfHasNextPage:NULL];
+    return [self _tasksWithStatus:TLTComplete andPage:pg retIfHasNextPage:NULL];
 }
 -(NSMutableArray*) readAllDownloadingTasks{
-    return [self readAllTasksWithStat:TLTDownloadding];
+    return [self _readAllTasksWithStat:TLTDownloadding];
 }
 -(NSMutableArray*) readDownloadingTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTDownloadding andPage:pg  retIfHasNextPage:NULL];
+    return [self _tasksWithStatus:TLTDownloadding andPage:pg  retIfHasNextPage:NULL];
 }
 -(NSMutableArray *) readAllOutofDateTasks{
-    return [self readAllTasksWithStat:TLTOutofDate];
+    return [self _readAllTasksWithStat:TLTOutofDate];
 }
 -(NSMutableArray *) readOutofDateTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTOutofDate andPage:pg  retIfHasNextPage:NULL];
+    return [self _tasksWithStatus:TLTOutofDate andPage:pg  retIfHasNextPage:NULL];
 }
 -(NSMutableArray*) readAllDeletedTasks{
-    return [self readAllTasksWithStat:TLTDeleted];
+    return [self _readAllTasksWithStat:TLTDeleted];
 }
 -(NSMutableArray*) readDeletedTasksWithPage:(NSUInteger) pg{
-    return [self tasksWithStatus:TLTDeleted andPage:pg  retIfHasNextPage:NULL];
+    return [self _tasksWithStatus:TLTDeleted andPage:pg  retIfHasNextPage:NULL];
 }
 #pragma mark - Private Normal Task Methods
 //私有方法
--(NSMutableArray *) tasksWithStatus:(TaskListType) listType{
+-(NSMutableArray *) _tasksWithStatus:(TaskListType) listType{
     NSString* userid=[self userID];
     NSURL *url;
     switch (listType) {
@@ -280,9 +280,9 @@ typedef enum {
         default:
             break;
     }
-    return [self tasksWithURL:url retIfHasNextPage:NULL listType:listType];
+    return [self _tasksWithURL:url retIfHasNextPage:NULL listType:listType];
 }
--(NSMutableArray *) tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPage{
+-(NSMutableArray *) _tasksWithStatus:(TaskListType) listType andPage:(NSUInteger) pg retIfHasNextPage:(BOOL *) hasNextPage{
     NSString* userid=[self userID];
     NSURL *url;
     switch (listType) {
@@ -305,15 +305,15 @@ typedef enum {
             break;
     }
     NSLog(@"%@",url);
-    return [self tasksWithURL:url retIfHasNextPage:hasNextPage listType:listType];
+    return [self _tasksWithURL:url retIfHasNextPage:hasNextPage listType:listType];
 }
--(NSMutableArray *) readAllTasksWithStat:(TaskListType) listType{
+-(NSMutableArray *) _readAllTasksWithStat:(TaskListType) listType{
     NSUInteger pg=1;
     BOOL hasNP=NO;
     NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
     NSMutableArray *mArray=nil;
     do {
-        mArray=[self tasksWithStatus:listType andPage:pg retIfHasNextPage:&hasNP];
+        mArray=[self _tasksWithStatus:listType andPage:pg retIfHasNextPage:&hasNP];
         [allTaskArray addObjectsFromArray:mArray];
         pg++;
     } while (hasNP);
@@ -322,7 +322,7 @@ typedef enum {
 //只适用于“已过期”，“已删除”任务
 
 //通用方法
--(NSURL*) getNextPageURL:(NSString *) currentPageData{
+-(NSURL*) _getNextPageURL:(NSString *) currentPageData{
     NSString *tmp=[ParseElements nextPageSubURL:currentPageData];
     NSURL *url=nil;
     if(tmp){
@@ -331,14 +331,14 @@ typedef enum {
     }
     return url;
 }
--(BOOL) hasNextPage:(NSString*) currrentPageData{
+-(BOOL) _hasNextPage:(NSString*) currrentPageData{
     BOOL result=NO;
-    if([self getNextPageURL:currrentPageData]){
+    if([self _getNextPageURL:currrentPageData]){
         result=YES;
     }
     return result;
 }
--(NSMutableArray *) tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool listType:(TaskListType) listtype{
+-(NSMutableArray *) _tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool listType:(TaskListType) listtype{
      NSString *siteData;
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
@@ -350,7 +350,7 @@ typedef enum {
     
     if(![self cookieValueWithName:@"lx_login"]){
         //完善所需要的cookies，并收到302响应跳转
-        NSString *timeStamp=[self currentTimeString];
+        NSString *timeStamp=[self _currentTimeString];
         NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
         ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
         [redirectURLrequest startSynchronous];
@@ -376,7 +376,7 @@ typedef enum {
         */
         //检查是否还有下一页
         if(hasNextPageBool){
-            *hasNextPageBool=[self hasNextPage:siteData];
+            *hasNextPageBool=[self _hasNextPage:siteData];
         }
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
         NSString *tmpD1=[siteData stringByMatching:re1 capture:1];
@@ -429,7 +429,7 @@ typedef enum {
 -(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid{
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     NSString *userid=[self userID];
-    NSString *currentTimeStamp=[self currentTimeString];
+    NSString *currentTimeStamp=[self _currentTimeString];
     NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=1&uid=%@&noCacheIE=%@",taskid,dcid,userid,currentTimeStamp];
     NSURL *url=[NSURL URLWithString:urlString];
     //获取BT task页面内容
@@ -503,7 +503,7 @@ typedef enum {
     if(data){
         if(hasNextPageBool){
             //检查是否还有下一页
-            *hasNextPageBool=[self hasNextPage:data];
+            *hasNextPageBool=[self _hasNextPage:data];
         }
         NSString *re1=@"<div\\s*class=\"rwbox\"([\\s\\S]*)?<!--rwbox-->";
         NSString *tmpD1=[data stringByMatching:re1 capture:1];
@@ -555,7 +555,7 @@ typedef enum {
     NSString *findex;
     NSString *sindex;
     NSString *enUrl=[URlEncode encodeToPercentEscapeString:url];
-    NSString *timestamp=[self currentTimeString];
+    NSString *timestamp=[self _currentTimeString];
     NSString *callURLString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/url_query?callback=queryUrl&u=%@&random=%@",enUrl,timestamp];
     NSURL *callURL=[NSURL URLWithString:callURLString];
     ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:callURL];
@@ -628,7 +628,7 @@ typedef enum {
 //add normal task(http,ed2k...)
 -(NSString *) addNormalTask:(NSString *)url{
     NSString *enUrl=[URlEncode encodeToPercentEscapeString:url];
-    NSString *timestamp=[self currentTimeString];
+    NSString *timestamp=[self _currentTimeString];
     NSString *callURLString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%@&random=%@&tcache=%@",enUrl,timestamp,timestamp];
     NSURL *callURL=[NSURL URLWithString:callURLString];
     ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:callURL];
@@ -840,7 +840,7 @@ typedef enum {
 #pragma mark - Other Useful Methods
 -(XunleiItemInfo *) getTaskWithTaskID:(NSString*) aTaskID{
     XunleiItemInfo *r=nil;
-    NSMutableArray *array=[self readAllTasksWithStat:TLTAll];
+    NSMutableArray *array=[self _readAllTasksWithStat:TLTAll];
     for(XunleiItemInfo* i in array){
         if(i.taskid==aTaskID){
             r=i;
@@ -850,7 +850,7 @@ typedef enum {
 }
 
 //取得当前UTC时间，并转换成13位数字字符
--(NSString *) currentTimeString{
+-(NSString *) _currentTimeString{
     double UTCTime=[[NSDate date] timeIntervalSince1970];
     NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
     currentTime=[[currentTime componentsSeparatedByString:@"."] objectAtIndex:0];

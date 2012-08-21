@@ -31,7 +31,7 @@ NSString * const TaskStatusArray[]={
 };
 
 - (void)encodeWithCoder:(NSCoder *)aCoder{
-    NSString *tmpStatus=[self statusToString:self.status];
+    NSString *tmpStatus=[self _statusToString:self.status];
     [aCoder encodeObject:tmpStatus forKey:@"status"];
     [aCoder encodeObject:self.taskid forKey:@"taskid"];
     [aCoder encodeObject:self.name forKey:@"name"];
@@ -51,7 +51,7 @@ NSString * const TaskStatusArray[]={
 }
 - (id)initWithCoder:(NSCoder *)aDecoder{
     if((self=[self init])){
-        TaskStatus tmpStatus=[self stringToTaskStatus:[aDecoder decodeObjectForKey:@"status"]];
+        TaskStatus tmpStatus=[self _stringToTaskStatus:[aDecoder decodeObjectForKey:@"status"]];
         [self setStatus:tmpStatus];
         [self setTaskid:[aDecoder decodeObjectForKey:@"taskid"]];
         [self setName:[aDecoder decodeObjectForKey:@"name"]];
@@ -71,10 +71,10 @@ NSString * const TaskStatusArray[]={
     return self;
 }
 
--(NSString *) statusToString:(TaskStatus) status{
+-(NSString *) _statusToString:(TaskStatus) status{
     return TaskStatusArray[status];
 }
--(TaskStatus) stringToTaskStatus:(NSString*) taskStatusString{
+-(TaskStatus) _stringToTaskStatus:(NSString*) taskStatusString{
     int r;
     for(int i=0;i<sizeof(TaskStatusArray)-1;i++){
         if([(NSString*)TaskStatusArray[i] isEqualToString:taskStatusString]){
