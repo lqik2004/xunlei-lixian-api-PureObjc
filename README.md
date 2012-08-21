@@ -1,8 +1,9 @@
-#迅雷离线API  
+#迅雷离线API  (TondarAPI)
 ***************  
 本项目旨在提供一个纯由Objective-C写成的迅雷离线API，方便在Mac OS X和iOS上开发相应项目。  
-*目前只在**iOS**上进行过测试，Mac OS X的兼容性正在测试，欢迎使用并进行反馈。*  
-
+**TondarAPI已经通过了iOS/Mac OS X兼容性测试** 
+###名称释义
+**Tondar**为波斯语（Persian），意味闪电  
 ###功能概述
 * 迅雷离线账户登陆  
 * 获取任务列表（返回返回每个任务的详细信息，参见XunleiItemInfo）  
@@ -17,16 +18,16 @@
 * 一键添加到迅雷快传
 
 ###TODO
-* 测试Mac OS兼容性
-* 完善获取“保留时间”方法
-* 增加对正在下载任务的进度获取
-* 增加本地BT文件上传
-* 支持批量任务添加
+* 完善获取“保留时间”方法  
+* 增加对正在下载任务的进度获取  
+* 增加本地BT文件上传  
+* 支持批量任务添加  
 * 去掉一些开源库的依赖
 
 ******************  
 ###使用迅雷离线API的项目  
 * 迅雷离线 for iOS
+* fakeThunder 2  (Developing)
 
 如果你使用了迅雷离线API，可以和我联系添加到这里
 
@@ -58,14 +59,17 @@
 [self setDefaultResponseEncoding:NS**UTF8**StringEncoding];    
 
 详细操作[点击这里](https://github.com/lqik2004/xunlei-lixian-api-PureObjc/commit/25dd032334adeff60e906c75c8dcc6ecad241026)
-####源文件结构说明
+####API结构说明
 迅雷离线API包含了10个文件  
-对外调用实际上只需要两个，HYXunleiLixianAPI和XunleiItemInfo  
+对外调用需要以下文件：
+HYXunleiLixianAPI，XunleiItemInfo 和Kuai  
 HYXunleiLixianAPI 提供了获取任务列表，添加任务删除任务等功能  
-XunleiItemInfo 提供了任务返回信息（包含任务名称，dcid等）
-
+XunleiItemInfo 提供了任务返回信息（包含任务名称，dcid等）  
+Kuai中对外调用为其中的KuaiItemInfo类，包含了从迅雷快传提取任务的各种信息
 *******************
 ###更新日志  
+* 2012-8-21 v0.4.1 fix some bugs && update README
+* 2012-8-20 v0.4 released!，增加了迅雷快传
 * 2012-8-19 重写了接口  
 
 *******************

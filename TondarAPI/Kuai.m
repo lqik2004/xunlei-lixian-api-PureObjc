@@ -27,17 +27,17 @@
 -(id)init{
     self=[super init];
     if(self){
-        self.name=nil;
-        self.urlString=nil;
-        self.size=nil;
-        self.gcid=nil;
-        self.cid=nil;
-        self.gcid_resid=nil;
-        self.fid=nil;
-        self.tid=nil;
-        self.namehex=@"0102";
-        self.internalid=@"111";
-        self.taskid=@"xxx";
+        _name=nil;
+        _urlString=nil;
+        _size=nil;
+        _gcid=nil;
+        _cid=nil;
+        _gcid_resid=nil;
+        _fid=nil;
+        _tid=nil;
+        _namehex=@"0102";
+        _internalid=@"111";
+        _taskid=@"xxx";
     }
     return self;
 }
