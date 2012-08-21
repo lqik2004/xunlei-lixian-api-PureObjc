@@ -49,7 +49,6 @@
         return @"未知信息";
     }
 }
-
 +(NSString *) taskSize:(NSString *)taskContent{
     NSString *re=@"<span\\s+class=\"rw_gray\"[^>]*?>([^<]+)</span>";
     NSString *result=[taskContent stringByMatching:re capture:1];
@@ -69,8 +68,9 @@
         return (@"已经过期或已经删除");
     }
 }
+//提取保留时间
 +(NSString *) taskRetainDays:(NSString *)taskContent{
-    NSString *re=@"<em\\s+class=\"infomag\\s+rw_gray\\s+info_col01\">([^<]+)</em>";
+    NSString *re=@"<div\\s*class=\"sub_barinfo\">\\s*<em[^>]*>([^<]+)</em>";
     NSString *result=[taskContent stringByMatching:re capture:1];
     if(result){
         return result;
@@ -133,7 +133,7 @@
 
 +(NSMutableDictionary *)taskInfo:(NSString *)taskContent{
     NSMutableDictionary *dic=[NSMutableDictionary dictionaryWithCapacity:0];
-    NSString *re0=@"<input\\s+id=['\"]?([^0-9]+)(\\d+)['\"]?.*?value=?['\"]?([^'\">]*)['\"]?";
+    NSString *re0=@"<input\\s+id=['\"]?([^0-9]+)(\\d+)['\"]?.*?value=?['\"]?([^\">]*)['\"]?";
     NSArray *data=[taskContent arrayOfCaptureComponentsMatchedByRegex:re0];
     NSArray *data1=[data objectAtIndex:0];
     [dic setObject:[data1 objectAtIndex:2] forKey:@"id"];

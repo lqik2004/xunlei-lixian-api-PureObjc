@@ -404,7 +404,12 @@ typedef enum {
             info.size=[taskInfoDic objectForKey:@"ysfilesize"];
             info.readableSize=taskReadableSize;
             info.downloadPercent=taskLoadingProcess;
-            info.retainDays=taskRetainDays;
+            //没办法，只能打补丁了，已删除页面无法和其他页面使用一个通用的正则去判断，只能这样了
+            if(listtype==TLTDeleted){
+                info.retainDays=@"已删除";
+            }else{
+                info.retainDays=taskRetainDays;
+            }
             info.addDate=taskAddTime;
             info.downloadURL=[taskInfoDic objectForKey:@"dl_url"];
             info.type=taskType;
