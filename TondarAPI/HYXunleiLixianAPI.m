@@ -431,12 +431,29 @@ typedef enum {
 }
 
 #pragma mark - BT Task
+-(NSMutableArray *) readAllBTTaskListWithTaskID:(NSString *) taskid hashID:(NSString *)dcid{
+    NSUInteger pg=1;
+    BOOL hasNP=NO;
+    NSMutableArray *allTaskArray=[NSMutableArray arrayWithCapacity:0];
+    NSMutableArray *mArray=nil;
+    do {
+        mArray=[self readSingleBTTaskListWithTaskID:taskid hashID:dcid andPageNumber:pg];
+        if(mArray){
+            hasNP=YES;
+            [allTaskArray addObjectsFromArray:mArray];
+            pg++;
+        }else{
+            hasNP=NO;
+        }
+    } while (hasNP);
+    return allTaskArray;
+}
 //获取BT页面内容(hashid 也就是dcid)
--(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid{
+-(NSMutableArray *) readSingleBTTaskListWithTaskID:(NSString *) taskid hashID:(NSString *)dcid andPageNumber:(NSUInteger) pg{
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     NSString *userid=[self userID];
     NSString *currentTimeStamp=[self _currentTimeString];
-    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=1&uid=%@&noCacheIE=%@",taskid,dcid,userid,currentTimeStamp];
+    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=%lu&uid=%@&noCacheIE=%@",taskid,dcid,pg,userid,currentTimeStamp];
     NSURL *url=[NSURL URLWithString:urlString];
     //获取BT task页面内容
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];

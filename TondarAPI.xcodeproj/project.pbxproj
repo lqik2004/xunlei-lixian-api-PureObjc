@@ -272,7 +272,6 @@
 		02F155AC15C547220054EF51 = {
 			isa = PBXGroup;
 			children = (
-				A83FEEA215E3E7A100FD8907 /* Cocoa.framework */,
 				02F155C115C547220054EF51 /* TondarAPI */,
 				02F155D715C547220054EF51 /* TondarAPITests */,
 				A83FEE9515E3E5EF00FD8907 /* URLTesting */,
@@ -294,6 +293,7 @@
 		02F155BA15C547220054EF51 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A83FEEA215E3E7A100FD8907 /* Cocoa.framework */,
 				02C066B215DCF70E008AF890 /* libz.dylib */,
 				02C066B415DCF80B008AF890 /* CFNetwork.framework */,
 				02C066B015DCF700008AF890 /* SystemConfiguration.framework */,
@@ -825,6 +825,7 @@
 				A83FEEA115E3E5EF00FD8907 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -31,15 +31,12 @@
     NSLog(@"TEST START");
     HYXunleiLixianAPI *TondarAPI = [[HYXunleiLixianAPI alloc] init];
 #define USERNAME @"lqik2004"
-#define pwd @"PWD"
+#define pwd @"pwd"
     if ([TondarAPI loginWithUsername:USERNAME Password:pwd]) {
         NSLog(@"LOGIN SUCCESS: %@", [TondarAPI userID]);
         //获取全部已经完成任务
-        /*
-        for (XunleiItemInfo *task in [TondarAPI readAllCompleteTasks]) {
-            NSLog(@"%@", task.name);
-        }
-         */
+        [TondarAPI readCompleteTasksWithPage:0];
+        NSLog(@"%@", [TondarAPI GDriveID]);
         /*获取删除和过期任务（有问题）
         for (XunleiItemInfo *task in [TondarAPI readAllDeletedTasks]) {
             NSLog(@"%@", task.name);
@@ -104,8 +101,20 @@
             [TondarAPI restartTask:task];
         }
          */
+        /*
 //        添加任务
         [TondarAPI addNormalTask:@"thunder://QUFlZDJrOi8vfGZpbGV8JUU1JUE0JThEJUU0JUJCJTg3JUU4JTgwJTg1JUU4JTgxJTk0JUU3JTlCJTlGLlRoZS5BdmVuZ2Vycy4yMDEyLkRWRC1STVZCLSVFNCVCQSVCQSVFNCVCQSVCQSVFNSVCRCVCMSVFOCVBNyU4NiVFNSU4RSU5RiVFNSU4OCU5QiVFNyVCRiVCQiVFOCVBRiU5MSVFNCVCOCVBRCVFOCU4QiVCMSVFNSU4RiU4QyVFOCVBRiVBRCVFNSVBRCU5NyVFNSVCOSU5NS5ybXZifDY4NDU2MzAxMnxlMTA2MDU2YTQ1NTkyYThjYTUzYmVhODMxZjk1NDJlMHxoPWZoZWM0cHpobjd6YzRoN2Y0bG02cHZvbWN0aTJ1cjdmfC9aWg=="];
+         */
+        /*
+        //BT列表测试
+        for (XunleiItemInfo *task in [TondarAPI readCompleteTasksWithPage:1]) {
+            if([task.isBT isEqualToString:@"0"]){
+                for(XunleiItemInfo *task1 in [TondarAPI allBTTaskListWithTaskID:task.taskid hashID:task.dcid]){
+                    NSLog(@"%@", task1.name);
+                }
+            }
+        }
+         */
     } else {
         NSLog(@"LOGIN FAIL");
     }

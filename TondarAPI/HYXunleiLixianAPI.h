@@ -72,7 +72,8 @@ typedef enum{
 
 #pragma mark - BT Task
 //BT任务列表
--(NSMutableArray *) btTaskPageWithTaskID:(NSString *) taskid hashID:(NSString *)dcid;
+-(NSMutableArray *) readSingleBTTaskListWithTaskID:(NSString *) taskid hashID:(NSString *)dcid andPageNumber:(NSUInteger) pg;
+-(NSMutableArray *) readAllBTTaskListWithTaskID:(NSString *) taskid hashID:(NSString *)dcid;
 #pragma mark - Add Task
 //添加任务
 -(NSString *) addMegnetTask:(NSString *) url;
