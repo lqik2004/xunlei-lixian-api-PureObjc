@@ -182,9 +182,9 @@ typedef enum {
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSString *value;
     for(NSHTTPCookie *cookie in [cookieJar cookies]){
-        if([cookie.name compare:aName]==NSOrderedSame){
+        if( [cookie.domain hasSuffix:@".xunlei.com"] && [cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
-            NSLog(@"%@",value);
+//            NSLog(@"%@:%@",aName,value);
         }
     }
     return value;
@@ -367,9 +367,10 @@ typedef enum {
     }
 //    NSLog(@"data:%@",siteData);
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
-    if (siteData&&([ParseElements GDriveID:siteData].length>0)) {
+    NSString *gdriveid=[ParseElements GDriveID:siteData];
+    if (siteData&&(gdriveid.length>0)) {
         //设置Gdriveid
-        [self setGdriveID:[ParseElements GDriveID:siteData]];
+        [self setGdriveID:gdriveid];
         /*
          *===============
          *Parse Html

@@ -35,8 +35,11 @@
     if ([TondarAPI loginWithUsername:USERNAME Password:pwd]) {
         NSLog(@"LOGIN SUCCESS: %@", [TondarAPI userID]);
         //获取全部已经完成任务
-        [TondarAPI readCompleteTasksWithPage:0];
-        NSLog(@"%@", [TondarAPI GDriveID]);
+        for (XunleiItemInfo *task in [TondarAPI readAllCompleteTasks]) {
+            NSLog(@"%@", task.name);
+        }
+         NSLog(@"Gdriveid:%@", [TondarAPI GDriveID]);
+       
         /*获取删除和过期任务（有问题）
         for (XunleiItemInfo *task in [TondarAPI readAllDeletedTasks]) {
             NSLog(@"%@", task.name);
