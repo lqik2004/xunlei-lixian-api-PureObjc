@@ -29,6 +29,7 @@
 ###使用迅雷离线API的项目  
 * 迅雷离线 for iOS
 * fakeThunder 2  (Developing)
+* [TurboX](https://github.com/lqik2004/TurboX)
 
 如果你使用了迅雷离线API，可以和我联系添加到这里
 

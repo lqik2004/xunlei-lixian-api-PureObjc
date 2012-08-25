@@ -131,7 +131,7 @@ typedef enum {
  */
 -(BOOL) isLogin{
     BOOL result=NO;
-    if([self _tasksWithStatus:4]){
+    if([self _tasksWithStatus:TLTComplete]){
         result=YES;
     }
     return result;
