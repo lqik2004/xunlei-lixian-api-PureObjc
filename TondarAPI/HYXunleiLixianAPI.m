@@ -61,7 +61,6 @@ typedef enum {
     //第一步登陆，验证用户名密码
     NSURL *url = [NSURL URLWithString:LoginURL];
     ASIFormDataRequest*request = [ASIFormDataRequest requestWithURL:url];
-    
     [request setPostValue:aName forKey:@"u"];
     [request setPostValue:enPassword forKey:@"p"];
     [request setPostValue:vCode forKey:@"verifycode"];
@@ -70,11 +69,15 @@ typedef enum {
     [request setUseSessionPersistence:YES];
     [request setUseCookiePersistence:YES];
     [request startSynchronous];
+    //把response中的Cookie添加到CookieStorage
+    [self _addResponseCookietoCookieStorage:[request responseCookies]];
     //完善所需要的cookies，并收到302响应跳转
     NSString *timeStamp=[self _currentTimeString];
     NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
     ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
     [redirectURLrequest startSynchronous];
+    //把response中的Cookie添加到CookieStorage
+    [self _addResponseCookietoCookieStorage:[redirectURLrequest responseCookies]];
     //验证是否登陆成功
     NSString *userid=[self userID];
     if(userid.length>1){
@@ -97,16 +100,18 @@ typedef enum {
 
 //获取验证码
 -(NSString *) _verifyCode:(NSString *) aUserName{
+    NSHTTPCookieStorage *cookieJar=[NSHTTPCookieStorage sharedHTTPCookieStorage];
+    [cookieJar setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
     NSString *currentTime=[self _currentTimeString];
     //NSLog(@"%@",currentTime);
     NSString *checkUrlString=[NSString stringWithFormat:@"http://login.xunlei.com/check?u=%@&cachetime=%@",aUserName,currentTime];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:checkUrlString]
-                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                         timeoutInterval:3];
     
-    [NSURLConnection sendSynchronousRequest:request
-                          returningResponse:nil
-                                      error:nil];
+    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:[NSURL URLWithString:checkUrlString]];
+    request.useCookiePersistence=YES;
+    [request startSynchronous];
+    //把response中的Cookie添加到CookieStorage
+    [self _addResponseCookietoCookieStorage:[request responseCookies]];
+    
     NSString *vCode;
     vCode=[self cookieValueWithName:@"check_result"];
     //判断是否取得合法VerifyCode
@@ -182,7 +187,11 @@ typedef enum {
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSString *value;
     for(NSHTTPCookie *cookie in [cookieJar cookies]){
-        if( [cookie.domain hasSuffix:@".xunlei.com"] && [cookie.name compare:aName]==NSOrderedSame){
+//        NSLog(@"%@",cookie);
+        if([aName isEqualToString:@"gdriveid"] && [cookie.domain hasSuffix:@".xunlei.com"] && [cookie.name compare:aName]==NSOrderedSame){
+            value=cookie.value;
+        }
+        if([cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
 //            NSLog(@"%@:%@",aName,value);
         }
@@ -193,11 +202,12 @@ typedef enum {
 //设置Cookies
 -(NSHTTPCookie *) setCookieWithKey:(NSString *) key Value:(NSString *) value{
     //创建一个cookie
-    NSDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setValue:value forKey:NSHTTPCookieValue];
-    [properties setValue:key forKey:NSHTTPCookieName];
-    [properties setValue:@".vip.xunlei.com" forKey:NSHTTPCookieDomain];
-    [properties setValue:@"/" forKey:NSHTTPCookiePath];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    [properties setObject:value forKey:NSHTTPCookieValue];
+    [properties setObject:key forKey:NSHTTPCookieName];
+    [properties setObject:@".vip.xunlei.com" forKey:NSHTTPCookieDomain];
+    [properties setObject:@"/" forKey:NSHTTPCookiePath];
+    [properties setObject:[[NSDate date] dateByAddingTimeInterval:2629743] forKey:NSHTTPCookieExpires];
     //这里是关键，不要写成@"FALSE",而是应该直接写成TRUE 或者 FALSE，否则会默认为TRUE
     [properties setValue:FALSE forKey:NSHTTPCookieSecure];
     NSHTTPCookie *cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
@@ -885,7 +895,7 @@ typedef enum {
     [request startSynchronous];
     NSString *response=[request responseString];
     if(response){
-        NSLog(response);
+//        NSLog(response);
         NSDictionary *resJson=[response objectFromJSONString];
         if([[resJson objectForKey:@"result"] intValue]==0){
             returnResult=YES;
@@ -916,6 +926,17 @@ typedef enum {
 }
 
 #pragma mark - Other Useful Methods
+-(void) _addResponseCookietoCookieStorage:(NSArray*) cookieArray{
+    //在iOS下还没有问题，但是在Mac下，如果收到的Cookie没有ExpireDate那么就不会存储到CookieStorage中，会造成获取错误
+    //目前为了不影响原有的带有ExpireDate的Cookie，只是在登陆上的几个跳转加了ExpireDate
+    //其实这么做迅雷没有什么问题，本来那几个登陆的关键值就是Non-Session的，反而是Mac OS蛋疼了
+    //参考连接：http://stackoverflow.com/questions/11570737/shared-instance-of-nshttpcookiestorage-does-not-persist-cookies
+    //WTF!!!
+    for(NSHTTPCookie* i in cookieArray ){
+        [self setCookieWithKey:i.name Value:i.value];
+    }
+}
+
 -(XunleiItemInfo *) getTaskWithTaskID:(NSString*) aTaskID{
     XunleiItemInfo *r=nil;
     NSMutableArray *array=[self _readAllTasksWithStat:TLTAll];
