@@ -56,7 +56,7 @@ typedef enum{
 @property(nonatomic) NSString *isBT;
 //
 @property(nonatomic) NSString *type;
-//bt hash
+//hash
 @property(nonatomic) NSString  *dcid;
 //下载状态
 @property(nonatomic) TaskStatus  status;

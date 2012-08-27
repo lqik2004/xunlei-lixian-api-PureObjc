@@ -187,13 +187,13 @@ typedef enum {
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSString *value;
     for(NSHTTPCookie *cookie in [cookieJar cookies]){
-//        NSLog(@"%@",cookie);
+        //        NSLog(@"%@",cookie);
         if([aName isEqualToString:@"gdriveid"] && [cookie.domain hasSuffix:@".xunlei.com"] && [cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
         }
         if([cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
-//            NSLog(@"%@:%@",aName,value);
+            //            NSLog(@"%@:%@",aName,value);
         }
     }
     return value;
@@ -350,7 +350,7 @@ typedef enum {
     return result;
 }
 -(NSMutableArray *) _tasksWithURL:(NSURL *) taskURL retIfHasNextPage:(BOOL *) hasNextPageBool listType:(TaskListType) listtype{
-     NSString *siteData;
+    NSString *siteData;
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     //设置lx_nf_all Cookie
@@ -375,7 +375,7 @@ typedef enum {
         [request startSynchronous];
         siteData=[request responseString];
     }
-//    NSLog(@"data:%@",siteData);
+    //    NSLog(@"data:%@",siteData);
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
     NSString *gdriveid=[ParseElements GDriveID:siteData];
     if (siteData&&(gdriveid.length>0)) {
@@ -385,7 +385,7 @@ typedef enum {
          *===============
          *Parse Html
          *===============
-        */
+         */
         //检查是否还有下一页
         if(hasNextPageBool){
             *hasNextPageBool=[self _hasNextPage:siteData];
@@ -403,7 +403,7 @@ typedef enum {
             //初始化XunleiItemInfo
             XunleiItemInfo *info=[XunleiItemInfo new];
             NSString *taskContent=[tmp objectAtIndex:0];
-//            NSLog(@"content:%@",taskContent);
+            //            NSLog(@"content:%@",taskContent);
             NSMutableDictionary *taskInfoDic=[ParseElements taskInfo:taskContent];
             NSString* taskLoadingProcess=[ParseElements taskLoadProcess:taskContent];
             NSString* taskRetainDays=[ParseElements taskRetainDays:taskContent];
@@ -582,8 +582,9 @@ typedef enum {
 
 #pragma mark - Add Task
 //add megnet task
+//返回dcid作为文件标示
 -(NSString *) addMegnetTask:(NSString *) url{
-    NSString *cid;
+    NSString *dcid;
     NSString *tsize;
     NSString *btname;
     NSString *findex;
@@ -607,7 +608,7 @@ typedef enum {
         //last fourth data
         NSString *dataGroup3=[array objectAtIndex:([array count]-4)];
         NSString *re1=@"['\"]?([^'\"]*)['\"]?";
-        cid=[[[dataGroup1 componentsSeparatedByString:@","] objectAtIndex:1] stringByMatching:re1 capture:1];
+        dcid=[[[dataGroup1 componentsSeparatedByString:@","] objectAtIndex:1] stringByMatching:re1 capture:1];
         //NSLog(cid);
         tsize=[[[dataGroup1 componentsSeparatedByString:@","] objectAtIndex:2] stringByMatching:re1 capture:1];
         //NSLog(tsize);
@@ -616,7 +617,7 @@ typedef enum {
         
         //findex
         NSString *re2=@"\\(([^\\)]*)\\)";
-        NSString *preString0=[dataGroup2 stringByMatching:re2 capture:1];  
+        NSString *preString0=[dataGroup2 stringByMatching:re2 capture:1];
         NSString *re3=@"'([^']*)'";
         NSArray *preArray0=[preString0 arrayOfCaptureComponentsMatchedByRegex:re3];
         NSMutableArray *preMutableArray=[NSMutableArray arrayWithCapacity:0];
@@ -627,14 +628,14 @@ typedef enum {
         //NSLog(@"%@",findex);
         
         //size index
-        preString0=[dataGroup3 stringByMatching:re2 capture:1];  
+        preString0=[dataGroup3 stringByMatching:re2 capture:1];
         preArray0=[preString0 arrayOfCaptureComponentsMatchedByRegex:re3];
         NSMutableArray *preMutableArray1=[NSMutableArray arrayWithCapacity:0];
         for(NSArray *a in preArray0){
             [preMutableArray1 addObject:[a objectAtIndex:1]];
         }
         sindex=[preMutableArray1 componentsJoinedByString:@"_"];
-        //NSLog(@"%@",sindex); 
+        //NSLog(@"%@",sindex);
         
         //提交任务
         NSURL *commitURL = [NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"];
@@ -642,7 +643,7 @@ typedef enum {
         
         [commitRequest setPostValue:[self userID] forKey:@"uid"];
         [commitRequest setPostValue:btname forKey:@"btname"];
-        [commitRequest setPostValue:cid forKey:@"cid"];
+        [commitRequest setPostValue:dcid forKey:@"cid"];
         [commitRequest setPostValue:tsize forKey:@"tsize"];
         [commitRequest setPostValue:findex forKey:@"findex"];
         [commitRequest setPostValue:sindex forKey:@"size"];
@@ -653,13 +654,14 @@ typedef enum {
         [commitRequest startSynchronous];
     }else {
         NSString *re1=@"queryUrl\\(-1,'([^']{40})";
-        cid=[data stringByMatching:re1 capture:1];
+        dcid=[data stringByMatching:re1 capture:1];
     }
     //NSLog(@"%@",cid);
-    return cid;
+    return dcid;
 }
 
 //add normal task(http,ed2k...)
+//返回dcid作为文件标示
 -(NSString *) addNormalTask:(NSString *)url{
     ConvertURL *curl=[ConvertURL new];
     NSString *decodeurl=[curl urlUnmask:url];
@@ -671,7 +673,7 @@ typedef enum {
     [request startSynchronous];
     NSString *dataRaw=[request responseString];
     
-    NSString *cid=@"";
+    NSString *dcid=@"";
     NSString *gcid=@"";
     NSString *size=@"";
     NSString *filename=@"";
@@ -707,7 +709,7 @@ typedef enum {
         NSLog(@"%@",d);
     }
     if(8==data.count){
-        cid=[newData objectAtIndex:0];
+        dcid=[newData objectAtIndex:0];
         gcid=[newData objectAtIndex:1];
         size=[newData objectAtIndex:2];
         filename=[newData objectAtIndex:3];
@@ -717,7 +719,7 @@ typedef enum {
         random=[newData objectAtIndex:7];
     }
     else if(9==data.count){
-        cid=[newData objectAtIndex:0];
+        dcid=[newData objectAtIndex:0];
         gcid=[newData objectAtIndex:1];
         size=[newData objectAtIndex:2];
         filename=[newData objectAtIndex:3];
@@ -727,7 +729,7 @@ typedef enum {
         random=[newData objectAtIndex:7];
         ext=[newData objectAtIndex:8];
     }else if(10==data.count){
-        cid=[newData objectAtIndex:0];
+        dcid=[newData objectAtIndex:0];
         gcid=[newData objectAtIndex:1];
         size=[newData objectAtIndex:2];
         someKey=[newData objectAtIndex:3];
@@ -742,13 +744,13 @@ typedef enum {
     NSString *newFilename=[URlEncode encodeToPercentEscapeString:filename];
     
     
-    NSString *commitString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%@&cid=%@&gcid=%@&size=%@&goldbean=%@&silverbean=%@&t=%@&url=%@&type=%@&o_page=task&o_taskid=0",userid,cid,gcid,size,goldbeen,silverbeen,newFilename,enUrl,taskType];
+    NSString *commitString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%@&cid=%@&gcid=%@&size=%@&goldbean=%@&silverbean=%@&t=%@&url=%@&type=%@&o_page=task&o_taskid=0",userid,dcid,gcid,size,goldbeen,silverbeen,newFilename,enUrl,taskType];
     //NSLog(@"%@",commitString);
     NSURL *commitURL=[NSURL URLWithString:commitString];
     NSLog(@"%@",commitURL);
     ASIHTTPRequest *commitRequest=[ASIHTTPRequest requestWithURL:commitURL];
     [commitRequest startSynchronous];
-    return [commitRequest responseString];
+    return dcid;
 }
 
 #pragma mark - Delete Task
@@ -778,7 +780,7 @@ typedef enum {
     NSMutableString *idString=[NSMutableString string];
     for(id i in ids){
         if([i isKindOfClass:[XunleiItemInfo class]]){
-           [idString appendString:[(XunleiItemInfo*)i taskid]];
+            [idString appendString:[(XunleiItemInfo*)i taskid]];
         }else if([i isKindOfClass:[NSString class]]){
             [idString appendString:i];
         }else{
@@ -839,7 +841,7 @@ typedef enum {
     for(XunleiItemInfo* info in infos){
         NSString* callbackString=[NSString stringWithFormat:@"jsonp%@",[self _currentTimeString]];
         NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=%@",callbackString]];
-    
+        
         ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:requestURL];
         [commitRequest setPostValue:info.taskid forKey:@"id[]"];
         [commitRequest setPostValue:info.dcid forKey:@"cid[]"];
@@ -895,7 +897,6 @@ typedef enum {
     [request startSynchronous];
     NSString *response=[request responseString];
     if(response){
-//        NSLog(response);
         NSDictionary *resJson=[response objectFromJSONString];
         if([[resJson objectForKey:@"result"] intValue]==0){
             returnResult=YES;
