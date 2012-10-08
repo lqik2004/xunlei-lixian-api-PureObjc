@@ -19,8 +19,6 @@
 		020E1F5D15DCF46B00FF99ED /* XunleiItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F5B15DCF46A00FF99ED /* XunleiItemInfo.m */; };
 		020E1F7115DCF5A900FF99ED /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 020E1F6F15DCF5A900FF99ED /* JSONKit.h */; };
 		020E1F7215DCF5A900FF99ED /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F7015DCF5A900FF99ED /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		022D2F9C15C6DAEA003FC27E /* RegexKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 022D2F9A15C6DAEA003FC27E /* RegexKitLite.h */; };
-		022D2F9D15C6DAEA003FC27E /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 022D2F9B15C6DAEA003FC27E /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		02C066B115DCF700008AF890 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C066B015DCF700008AF890 /* SystemConfiguration.framework */; };
 		02C066B315DCF70E008AF890 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C066B215DCF70E008AF890 /* libz.dylib */; };
 		02C066B515DCF80B008AF890 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C066B415DCF80B008AF890 /* CFNetwork.framework */; };
@@ -35,6 +33,10 @@
 		A81275031622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
 		A81275041622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
 		A81275051622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
+		A81275111622F0AF002A92F4 /* NSString+RE.h in Headers */ = {isa = PBXBuildFile; fileRef = A812750F1622F0AF002A92F4 /* NSString+RE.h */; };
+		A81275121622F0AF002A92F4 /* NSString+RE.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275101622F0AF002A92F4 /* NSString+RE.m */; };
+		A81275131622F0AF002A92F4 /* NSString+RE.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275101622F0AF002A92F4 /* NSString+RE.m */; };
+		A81275141622F0AF002A92F4 /* NSString+RE.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275101622F0AF002A92F4 /* NSString+RE.m */; };
 		A83FEE7D15E3E23900FD8907 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = A83FEE7915E3E23900FD8907 /* NSData+Base64.h */; };
 		A83FEE7E15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
 		A83FEE7F15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
@@ -76,8 +78,6 @@
 		020E1F5B15DCF46A00FF99ED /* XunleiItemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XunleiItemInfo.m; sourceTree = "<group>"; };
 		020E1F6F15DCF5A900FF99ED /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = JSONKit/JSONKit.h; sourceTree = "<group>"; };
 		020E1F7015DCF5A900FF99ED /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = JSONKit/JSONKit.m; sourceTree = "<group>"; };
-		022D2F9A15C6DAEA003FC27E /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
-		022D2F9B15C6DAEA003FC27E /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		02C066B015DCF700008AF890 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		02C066B215DCF70E008AF890 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		02C066B415DCF80B008AF890 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CFNetwork.framework; sourceTree = DEVELOPER_DIR; };
@@ -97,6 +97,8 @@
 		02F155DE15C547220054EF51 /* TondarAPITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TondarAPITests.m; sourceTree = "<group>"; };
 		A81275001622B2A2002A92F4 /* LCHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCHTTPConnection.h; sourceTree = "<group>"; };
 		A81275011622B2A2002A92F4 /* LCHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCHTTPConnection.m; sourceTree = "<group>"; };
+		A812750F1622F0AF002A92F4 /* NSString+RE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+RE.h"; sourceTree = "<group>"; };
+		A81275101622F0AF002A92F4 /* NSString+RE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+RE.m"; sourceTree = "<group>"; };
 		A83FEE7915E3E23900FD8907 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		A83FEE7B15E3E23900FD8907 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
@@ -162,9 +164,9 @@
 		026EB2D515C54C5F0005909F /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				A812750E1622F097002A92F4 /* LCRegexKit */,
 				A83FEE8415E3E23D00FD8907 /* Base64 */,
 				02C066BF15DCFB22008AF890 /* LCHTTPConnection */,
-				02C066BD15DCFB1A008AF890 /* RegexKitLite */,
 				020E1F7315DCF5AB00FF99ED /* JSONKit */,
 			);
 			name = Utility;
@@ -189,15 +191,6 @@
 				A83FEE8615E3E2AA00FD8907 /* ConvertURL.m */,
 			);
 			name = Tondar;
-			sourceTree = "<group>";
-		};
-		02C066BD15DCFB1A008AF890 /* RegexKitLite */ = {
-			isa = PBXGroup;
-			children = (
-				022D2F9A15C6DAEA003FC27E /* RegexKitLite.h */,
-				022D2F9B15C6DAEA003FC27E /* RegexKitLite.m */,
-			);
-			name = RegexKitLite;
 			sourceTree = "<group>";
 		};
 		02C066BF15DCFB22008AF890 /* LCHTTPConnection */ = {
@@ -295,6 +288,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A812750E1622F097002A92F4 /* LCRegexKit */ = {
+			isa = PBXGroup;
+			children = (
+				A812750F1622F0AF002A92F4 /* NSString+RE.h */,
+				A81275101622F0AF002A92F4 /* NSString+RE.m */,
+			);
+			name = LCRegexKit;
+			sourceTree = "<group>";
+		};
 		A83FEE8415E3E23D00FD8907 /* Base64 */ = {
 			isa = PBXGroup;
 			children = (
@@ -335,7 +337,6 @@
 			files = (
 				020E1F4B15DCF40B00FF99ED /* HYXunleiLixianAPI.h in Headers */,
 				020E1F5C15DCF46B00FF99ED /* XunleiItemInfo.h in Headers */,
-				022D2F9C15C6DAEA003FC27E /* RegexKitLite.h in Headers */,
 				020E1F5015DCF41500FF99ED /* md5.h in Headers */,
 				020E1F5415DCF42300FF99ED /* ParseElements.h in Headers */,
 				020E1F5815DCF45F00FF99ED /* URlEncode.h in Headers */,
@@ -345,6 +346,7 @@
 				A83FEE8015E3E23900FD8907 /* NSString+Base64.h in Headers */,
 				A83FEE8715E3E2AA00FD8907 /* ConvertURL.h in Headers */,
 				A81275021622B2A2002A92F4 /* LCHTTPConnection.h in Headers */,
+				A81275111622F0AF002A92F4 /* NSString+RE.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,7 +497,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				022D2F9D15C6DAEA003FC27E /* RegexKitLite.m in Sources */,
 				020E1F4C15DCF40B00FF99ED /* HYXunleiLixianAPI.m in Sources */,
 				020E1F5115DCF41500FF99ED /* md5.m in Sources */,
 				020E1F5515DCF42300FF99ED /* ParseElements.m in Sources */,
@@ -507,6 +508,7 @@
 				A83FEE8115E3E23900FD8907 /* NSString+Base64.m in Sources */,
 				A83FEE8815E3E2AA00FD8907 /* ConvertURL.m in Sources */,
 				A81275031622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
+				A81275121622F0AF002A92F4 /* NSString+RE.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,6 +522,7 @@
 				A83FEE8215E3E23900FD8907 /* NSString+Base64.m in Sources */,
 				A83FEE8915E3E2AA00FD8907 /* ConvertURL.m in Sources */,
 				A81275041622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
+				A81275131622F0AF002A92F4 /* NSString+RE.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,6 +532,7 @@
 			files = (
 				A83FEE9D15E3E5EF00FD8907 /* URLTesting.m in Sources */,
 				A81275051622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
+				A81275141622F0AF002A92F4 /* NSString+RE.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

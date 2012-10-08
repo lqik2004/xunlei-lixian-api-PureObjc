@@ -22,7 +22,7 @@
  */
 #import "Kuai.h"
 #import "LCHTTPConnection.h"
-#import "RegexKitLite.h"
+#import "NSString+RE.h"
 @implementation KuaiItemInfo
 -(id)init{
     self=[super init];

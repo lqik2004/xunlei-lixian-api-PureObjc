@@ -26,7 +26,7 @@
 #import "md5.h"
 #import "ParseElements.h"
 #import "JSONKit.h"
-#import "RegexKitLite.h"
+#import "NSString+RE.h"
 #import "URlEncode.h"
 #import "XunleiItemInfo.h"
 #import "Kuai.h"

@@ -35,14 +35,13 @@
 ******************
 ###要求
 **系统**：iOS 5.0及以上(支持ARC)和Mac OX 10.7 Lion及以上  
-**Xcode**：4.3及其以上    
-[**RegexKitLite**](http://regexkit.sourceforge.net/RegexKitLite/)  
+**Xcode**：4.3及其以上      
 [**JSONKit**](https://github.com/johnezang/JSONKit/)
 ******************
 ###源文件说明
 ####依赖的开源库
-迅雷离线API依赖的开源库有：[**RegexKitLite**](http://regexkit.sourceforge.net/RegexKitLite/)和[**JSONKit**](https://github.com/johnezang/JSONKit/)  
-[**RegexKitLite**](http://regexkit.sourceforge.net/RegexKitLite/) 是一款方便进行正则处理的开源库，用起来非常不错，但是据说有reject风险？现在还未确定  
+迅雷离线API依赖的开源库有:[**JSONKit**](https://github.com/johnezang/JSONKit/)  
+  
 [**JSONKit**](https://github.com/johnezang/JSONKit/) 处理JSON的开源库，详细情况可以查看项目主页
 
 #####开源库的使用######
@@ -60,6 +59,7 @@ XunleiItemInfo 提供了任务返回信息（包含任务名称，dcid等）
 Kuai中对外调用为其中的KuaiItemInfo类，包含了从迅雷快传提取任务的各种信息
 *******************
 ###更新日志  
+* 2012-10-8 v0.6.2 去掉了对regexKitLite的依赖
 * 2012-10-8 v0.6.1 去掉了对ASIHTTP的依赖
 * 2012-8-22 v0.5 fix some bugs && 增加了对迅雷，旋风，Flashget专有下载链接格式的支持
 * 2012-8-21 v0.4.1 fix some bugs && update README

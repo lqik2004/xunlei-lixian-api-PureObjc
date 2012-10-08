@@ -37,9 +37,9 @@
         /*
         //获取全部已经完成任务
         for (XunleiItemInfo *task in [TondarAPI readAllOutofDateTasks]) {
-            NSLog(@"%@", task.name);
+            NSLog(@"%@", task.readableSize);
         }
-         */
+//         */
          NSLog(@"Gdriveid:%@", [TondarAPI GDriveID]);
         /*
         NSString* cookie=[NSString stringWithFormat:@"\"Cookie: gdriveid=%@;\"",[TondarAPI GDriveID]];
@@ -78,6 +78,7 @@
             NSLog(@"%@", task.name);
         }
          */
+        /*
         //测试快传
         NSURL *kuaiURL=[NSURL URLWithString:@"http://kuai.xunlei.com/d/NCMPTPTXWUZC"];
 //        [TondarAPI addAllKuaiTasksToLixianByURL:kuaiURL];
@@ -86,7 +87,7 @@
             NSLog(@"Name:%@<<<<<<<<<<<Url:%@",i.name,i.urlString);
             NSLog(@"\n%@",[TondarAPI generateXunleiURLStringByKuaiItemInfo:i]);
         }
-//        */
+        */
         /*
 //        测试保留天数
         for (XunleiItemInfo *task in [TondarAPI readCompleteTasksWithPage:1]) {
