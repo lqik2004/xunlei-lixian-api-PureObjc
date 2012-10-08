@@ -24,14 +24,14 @@
 
 #import "HYXunleiLixianAPI.h"
 #import "md5.h"
-#import "ASIFormDataRequest.h"
 #import "ParseElements.h"
 #import "JSONKit.h"
-#import "RegexKitLite.h"
+#import "NSString+RE.h"
 #import "URlEncode.h"
 #import "XunleiItemInfo.h"
 #import "Kuai.h"
 #import "ConvertURL.h"
+#import "LCHTTPConnection.h"
 
 typedef enum {
     TLTAll,
@@ -60,22 +60,20 @@ typedef enum {
     
     //第一步登陆，验证用户名密码
     NSURL *url = [NSURL URLWithString:LoginURL];
-    ASIFormDataRequest*request = [ASIFormDataRequest requestWithURL:url];
+    LCHTTPConnection *request=[LCHTTPConnection new];
     [request setPostValue:aName forKey:@"u"];
     [request setPostValue:enPassword forKey:@"p"];
     [request setPostValue:vCode forKey:@"verifycode"];
     [request setPostValue:@"0" forKey:@"login_enable"];
     [request setPostValue:@"720" forKey:@"login_hour"];
-    [request setUseSessionPersistence:YES];
-    [request setUseCookiePersistence:YES];
-    [request startSynchronous];
+    [request post:[url absoluteString]];
     //把response中的Cookie添加到CookieStorage
     [self _addResponseCookietoCookieStorage:[request responseCookies]];
     //完善所需要的cookies，并收到302响应跳转
     NSString *timeStamp=[self _currentTimeString];
     NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
-    ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
-    [redirectURLrequest startSynchronous];
+    LCHTTPConnection* redirectURLrequest = [LCHTTPConnection new];
+    [redirectURLrequest get:[redirectUrl absoluteString]];
     //把response中的Cookie添加到CookieStorage
     [self _addResponseCookietoCookieStorage:[redirectURLrequest responseCookies]];
     //验证是否登陆成功
@@ -106,9 +104,8 @@ typedef enum {
     //NSLog(@"%@",currentTime);
     NSString *checkUrlString=[NSString stringWithFormat:@"http://login.xunlei.com/check?u=%@&cachetime=%@",aUserName,currentTime];
     
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:[NSURL URLWithString:checkUrlString]];
-    request.useCookiePersistence=YES;
-    [request startSynchronous];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    [request get:checkUrlString];
     //把response中的Cookie添加到CookieStorage
     [self _addResponseCookietoCookieStorage:[request responseCookies]];
     
@@ -363,17 +360,15 @@ typedef enum {
         //完善所需要的cookies，并收到302响应跳转
         NSString *timeStamp=[self _currentTimeString];
         NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
-        ASIHTTPRequest* redirectURLrequest = [ASIHTTPRequest requestWithURL:redirectUrl];
-        [redirectURLrequest startSynchronous];
+        LCHTTPConnection* redirectURLrequest = [LCHTTPConnection new];
+        [redirectURLrequest get:[redirectUrl absoluteString]];
         //获取task页面内容
-        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:taskURL];
-        [request startSynchronous];
-        siteData=[request responseString];
+        LCHTTPConnection *request=[LCHTTPConnection new];
+        siteData=[request get:[taskURL absoluteString]];
     }else {
         //获取task页面内容
-        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:taskURL];
-        [request startSynchronous];
-        siteData=[request responseString];
+        LCHTTPConnection *request=[LCHTTPConnection new];
+        siteData=[request get:[taskURL absoluteString]];
     }
     //    NSLog(@"data:%@",siteData);
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
@@ -467,9 +462,8 @@ typedef enum {
     NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=%lu&uid=%@&noCacheIE=%@",taskid,dcid,pg,userid,currentTimeStamp];
     NSURL *url=[NSURL URLWithString:urlString];
     //获取BT task页面内容
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    [request startSynchronous];
-    NSString *siteData=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString* siteData=[request get:[url absoluteString]];
     if (siteData) {
         NSString *re=@"^fill_bt_list\\((.+)\\)\\s*$";
         NSString *s=[siteData stringByMatching:re capture:1];
@@ -531,9 +525,8 @@ typedef enum {
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/cloud?userid=%@&p=%ld",aUserID,pg]];
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:requestURL];
-    [request startSynchronous];
-    NSString *data=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString* data=[request get:[requestURL absoluteString]];
     if(data){
         if(hasNextPageBool){
             //检查是否还有下一页
@@ -593,9 +586,8 @@ typedef enum {
     NSString *timestamp=[self _currentTimeString];
     NSString *callURLString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/url_query?callback=queryUrl&u=%@&random=%@",enUrl,timestamp];
     NSURL *callURL=[NSURL URLWithString:callURLString];
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:callURL];
-    [request startSynchronous];
-    NSString *data=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString* data=[request get:[callURL absoluteString]];
     NSString *re=@"queryUrl(\\(1,.*\\))\\s*$";
     NSString *sucsess=[data stringByMatching:re capture:1];
     if(sucsess){
@@ -639,8 +631,8 @@ typedef enum {
         
         //提交任务
         NSURL *commitURL = [NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"];
-        ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:commitURL];
-        
+        LCHTTPConnection* commitRequest = [LCHTTPConnection new];
+
         [commitRequest setPostValue:[self userID] forKey:@"uid"];
         [commitRequest setPostValue:btname forKey:@"btname"];
         [commitRequest setPostValue:dcid forKey:@"cid"];
@@ -648,10 +640,7 @@ typedef enum {
         [commitRequest setPostValue:findex forKey:@"findex"];
         [commitRequest setPostValue:sindex forKey:@"size"];
         [commitRequest setPostValue:@"0" forKey:@"from"];
-        
-        [commitRequest setUseSessionPersistence:YES];
-        [commitRequest setUseCookiePersistence:YES];
-        [commitRequest startSynchronous];
+        [commitRequest post:[commitURL absoluteString]];
     }else {
         NSString *re1=@"queryUrl\\(-1,'([^']{40})";
         dcid=[data stringByMatching:re1 capture:1];
@@ -668,10 +657,9 @@ typedef enum {
     NSString *enUrl=[URlEncode encodeToPercentEscapeString:decodeurl];
     NSString *timestamp=[self _currentTimeString];
     NSString *callURLString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%@&random=%@&tcache=%@",enUrl,timestamp,timestamp];
-    NSURL *callURL=[NSURL URLWithString:callURLString];
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:callURL];
-    [request startSynchronous];
-    NSString *dataRaw=[request responseString];
+//    NSURL *callURL=[NSURL URLWithString:callURLString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString *dataRaw=[request get:callURLString];
     
     NSString *dcid=@"";
     NSString *gcid=@"";
@@ -748,8 +736,8 @@ typedef enum {
     //NSLog(@"%@",commitString);
     NSURL *commitURL=[NSURL URLWithString:commitString];
     NSLog(@"%@",commitURL);
-    ASIHTTPRequest *commitRequest=[ASIHTTPRequest requestWithURL:commitURL];
-    [commitRequest startSynchronous];
+    LCHTTPConnection *commitRequest=[LCHTTPConnection new];
+    [commitRequest get:commitString];
     return dcid;
 }
 
@@ -794,9 +782,8 @@ typedef enum {
     NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_delete?type=2&taskids=%@&old_idlist=&databases=0%@&old_databaselist=&",encodeIDString,tmp];
     NSLog(@"%@",urlString);
     NSURL *url=[NSURL URLWithString:urlString];
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:url];
-    [request startSynchronous];
-    NSString *requestString=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString *requestString=[request get:[url absoluteString]];
     if (requestString) {
         NSString *re=@"^delete_task_resp\\((.+)\\)$";
         NSNumber *result=[[[requestString stringByMatching:re capture:1] objectFromJSONString] objectForKey:@"result"];
@@ -811,9 +798,8 @@ typedef enum {
     BOOL returnResult=NO;
     NSString* idString=[ids componentsJoinedByString:@","];
     NSString *requestString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_pause?tid=%@&uid=%@",idString,[self userID]];
-    ASIHTTPRequest *request=[ASIHTTPRequest requestWithURL:[NSURL URLWithString:requestString]];
-    [request startSynchronous];
-    NSString* responsed=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString* responsed=[request get:requestString];
     if(responsed){
         returnResult=YES;
     }
@@ -842,7 +828,7 @@ typedef enum {
         NSString* callbackString=[NSString stringWithFormat:@"jsonp%@",[self _currentTimeString]];
         NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=%@",callbackString]];
         
-        ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:requestURL];
+        LCHTTPConnection* commitRequest = [LCHTTPConnection new];
         [commitRequest setPostValue:info.taskid forKey:@"id[]"];
         [commitRequest setPostValue:info.dcid forKey:@"cid[]"];
         [commitRequest setPostValue:info.originalURL forKey:@"url[]"];
@@ -850,10 +836,8 @@ typedef enum {
         [commitRequest setPostValue:[NSString stringWithFormat:@"%u",info.status] forKey:@"download_status[]"];
         [commitRequest setPostValue:@"1" forKey:@"type"];
         [commitRequest setPostValue:@"0" forKey:@"class_id"];
-        [commitRequest setUseSessionPersistence:YES];
-        [commitRequest setUseCookiePersistence:YES];
-        [commitRequest startSynchronous];
-        if (![commitRequest responseString]) {
+        NSString *responseString=[commitRequest post:[requestURL absoluteString]];
+        if (!responseString) {
             returnResult=NO;
         }
     }
@@ -865,14 +849,11 @@ typedef enum {
     NSString *gcid=[ParseElements GCID:url];
     NSURL *requestURL=[NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/cloud_build_task/"];
     NSString *detailTaskPostValue=[NSString stringWithFormat:@"[{\"section_type\":\"c7\",\"filesize\":\"%@\",\"gcid\":\"%@\",\"cid\":\"%@\",\"filename\":\"%@\"}]",size,gcid,cid,aName];
-    ASIFormDataRequest* commitRequest = [ASIFormDataRequest requestWithURL:requestURL];
+    LCHTTPConnection* commitRequest = [LCHTTPConnection new];
     NSString *cloudFormat=[NSString stringWithFormat:@"%d",q];
     [commitRequest setPostValue:cloudFormat  forKey:@"cloud_format"];
     [commitRequest setPostValue:detailTaskPostValue forKey:@"tasks"];
-    [commitRequest setUseSessionPersistence:YES];
-    [commitRequest setUseCookiePersistence:YES];
-    [commitRequest startSynchronous];
-    NSString *response=[commitRequest responseString];
+    NSString *response=[commitRequest post:[requestURL absoluteString]];
     if(response){
         NSDictionary *rDict=[response objectFromJSONString];
         if([rDict objectForKey:@"succ"] && [[rDict objectForKey:@"succ"] intValue]==1){
@@ -889,13 +870,11 @@ typedef enum {
     BOOL returnResult=NO;
     NSString *jsontext=[ids JSONString];
     NSURL *url=[NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/cloud_delete_task"];
-    ASIFormDataRequest*request = [ASIFormDataRequest requestWithURL:url];
+    LCHTTPConnection*request = [LCHTTPConnection new];
     
     [request setPostValue:jsontext forKey:@"tasks"];
-    [request setUseSessionPersistence:YES];
-    [request setUseCookiePersistence:YES];
-    [request startSynchronous];
-    NSString *response=[request responseString];
+
+    NSString *response=[request post:[url absoluteString]];
     if(response){
         NSDictionary *resJson=[response objectFromJSONString];
         if([[resJson objectForKey:@"result"] intValue]==0){

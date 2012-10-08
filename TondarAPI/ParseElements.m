@@ -23,7 +23,7 @@
 
 
 #import "ParseElements.h"
-#import "RegexKitLite.h"
+#import "NSString+RE.h"
 
 @implementation ParseElements
 

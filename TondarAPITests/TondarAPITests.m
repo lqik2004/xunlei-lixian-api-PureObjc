@@ -9,7 +9,6 @@
 #import "TondarAPITests.h"
 #import <TondarAPI/HYXunleiLixianAPI.h>
 #import <TondarAPI/XunleiItemInfo.h>
-#import "ASIHTTPRequest.h"
 
 @implementation TondarAPITests
 
@@ -35,12 +34,14 @@
 #define pwd @"pwd"
     if ([TondarAPI loginWithUsername:USERNAME Password:pwd]) {
         NSLog(@"LOGIN SUCCESS: %@", [TondarAPI userID]);
+        /*
         //获取全部已经完成任务
-        for (XunleiItemInfo *task in [TondarAPI readAllCompleteTasks]) {
-            NSLog(@"%@", task.name);
+        for (XunleiItemInfo *task in [TondarAPI readAllOutofDateTasks]) {
+            NSLog(@"%@", task.readableSize);
         }
+//         */
          NSLog(@"Gdriveid:%@", [TondarAPI GDriveID]);
-        
+        /*
         NSString* cookie=[NSString stringWithFormat:@"\"Cookie: gdriveid=%@;\"",[TondarAPI GDriveID]];
         NSString* url=@"http://gdl.lixian.vip.xunlei.com/download?fid=j+f2P6nsVNZFKQdfr8pNzrHKTt0NtvpjAAAAAI/7zLCWJ/cdtHAo4U/v2Z08aGFU&mid=666&threshold=150&tid=C68A4BB60AEF6B90BFE413A399AF5991&srcid=4&verno=1&g=8FFBCCB09627F71DB47028E14FEFD99D3C686154&scn=c11&i=2682E4FEEFFAF0BB898FE53880FD5433&t=4&ui=642109&ti=62449130369&s=1677374989&m=0&n=01B2DE3389C4BB2E48331CAC1B54562E412202CA6E303234585406D271783236344CF92F97CBD3B0CAB2E72288F72E6D6B1731E45F00000000&ff=0&co=0766E865B2CB672C15A99F114A99658B&cm=1";
         NSString* name=@"我正在测试.mkv";
@@ -49,6 +50,7 @@
         [request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
         [request startSynchronous];
         NSLog(@"%d",[request responseStatusCode]);
+         */
         /*获取删除和过期任务（有问题）
         for (XunleiItemInfo *task in [TondarAPI readAllDeletedTasks]) {
             NSLog(@"%@", task.name);
@@ -76,31 +78,26 @@
             NSLog(@"%@", task.name);
         }
          */
-        /*测试快传
-        NSURL *kuaiURL=[NSURL URLWithString:@"http://kuai.xunlei.com/d/NVICEUTSJWIO"];
+        /*
+        //测试快传
+        NSURL *kuaiURL=[NSURL URLWithString:@"http://kuai.xunlei.com/d/NCMPTPTXWUZC"];
 //        [TondarAPI addAllKuaiTasksToLixianByURL:kuaiURL];
         NSArray* infos=[TondarAPI getKuaiItemInfos:kuaiURL];
         for(KuaiItemInfo* i in infos){
             NSLog(@"Name:%@<<<<<<<<<<<Url:%@",i.name,i.urlString);
             NSLog(@"\n%@",[TondarAPI generateXunleiURLStringByKuaiItemInfo:i]);
         }
-         */
+        */
         /*
 //        测试保留天数
         for (XunleiItemInfo *task in [TondarAPI readCompleteTasksWithPage:1]) {
-            NSLog(@"%@", task.retainDays);
+            NSLog(@"%@++++++++%@", task.name,task.retainDays);
         }
         for (XunleiItemInfo *task in [TondarAPI readOutofDateTasksWithPage:1]) {
-            NSLog(@"%@", task.retainDays);
+            NSLog(@"%@++++++++%@", task.name,task.retainDays);
         }
         for (XunleiItemInfo *task in [TondarAPI readDeletedTasksWithPage:1]) {
-            NSLog(@"%@", task.retainDays);
-        }
-         */
-        /*
-//        测试文件名不完整bug
-        for (XunleiItemInfo *task in [TondarAPI readAllCompleteTasks]) {
-            NSLog(@"%@", task.name);
+            NSLog(@"%@+++++++++%@", task.name,task.retainDays);
         }
          */
         /*
@@ -110,7 +107,7 @@
             if([TondarAPI pauseTask:task]){
                 NSLog(@"Pause Done!!");
             }
-            [TondarAPI restartTask:task];
+//            [TondarAPI restartTask:task];
         }
          */
         /*
@@ -121,8 +118,9 @@
         //BT列表测试
         for (XunleiItemInfo *task in [TondarAPI readCompleteTasksWithPage:1]) {
             if([task.isBT isEqualToString:@"0"]){
-                for(XunleiItemInfo *task1 in [TondarAPI allBTTaskListWithTaskID:task.taskid hashID:task.dcid]){
-                    NSLog(@"%@", task1.name);
+                NSLog(@"BT FolderName:\n%@\n===========\n",task.name);
+                for(XunleiItemInfo *task1 in [TondarAPI readAllBTTaskListWithTaskID: task.taskid hashID:task.dcid]){
+                    NSLog(@"TaskName:%@", task1.name);
                 }
             }
         }
