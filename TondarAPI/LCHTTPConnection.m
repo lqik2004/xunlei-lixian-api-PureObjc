@@ -16,14 +16,6 @@
 @synthesize postData;
 
 
-- (id)init {
-    if (self = [super init]) {
-        _cookies = [[NSMutableDictionary alloc] init];
-        
-    }
-    return self;
-}
-
 + (LCHTTPConnection *)sharedZZHTTPConnection {
     static LCHTTPConnection *_sharedZZHTTPConnection = nil;
     if (!_sharedZZHTTPConnection) {
@@ -65,13 +57,13 @@
         }
     }
     
-    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 300)
+    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 400)
 		return responseResult;
     else
         return nil;
 }
 
--(void) setPostValue:(NSString*) key forKey:(NSString*) value{
+-(void) setPostValue:(NSString*) value forKey:(NSString*) key{
     // Remove any existing value
 	NSUInteger i;
 	for (i=0; i<[[self postData] count]; i++) {
@@ -142,7 +134,7 @@
             [self setCookieWithKey:t.name Value:t.value];
         }
     }
-    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 300)
+    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 400)
 		return responseResult;
     else
         return nil;
@@ -178,7 +170,7 @@
             [self setCookieWithKey:t.name Value:t.value];
         }
     }
-    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 300)
+    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 400)
 		return responseResult;
     else
         return nil;
@@ -201,6 +193,8 @@
     [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
     [cookieStorage setCookie:cookie];
     
+    //add to responseCookies Array
+    [[self responseCookies] addObject:cookie];
     return cookie;
 }
 

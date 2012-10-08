@@ -21,7 +21,7 @@
  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 #import "Kuai.h"
-#import "ASIHTTPRequest.h"
+#import "LCHTTPConnection.h"
 #import "RegexKitLite.h"
 @implementation KuaiItemInfo
 -(id)init{
@@ -49,9 +49,8 @@
 
 -(NSArray*) kuaiItemInfoArrayByKuaiURL:(NSURL*) kuaiURL{
     NSMutableArray *retArray=[NSMutableArray arrayWithCapacity:0];
-    ASIHTTPRequest *request=[[ASIHTTPRequest alloc] initWithURL:kuaiURL];
-    [request startSynchronous];
-    NSString* data=[request responseString];
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString* data=[request get:[kuaiURL absoluteString]];
     if(data){
         NSString* re=@"file_name=\"([^\"]*)\"\\s*file_url=\"([^\"]*)\"\\s*file_size=\"([^\"]*)\"\\s*cid=\"([^\"]*)\"\\s*gcid=\"([^\"]*)\"\\s*gcid_resid=\"([^\"]*)\"";
         NSArray *originalUrlInfoArray=[data arrayOfCaptureComponentsMatchedByRegex:re];

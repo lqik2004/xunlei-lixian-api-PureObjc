@@ -8,11 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LCHTTPConnection : NSObject <NSURLConnectionDelegate> {
-@public
-    NSMutableDictionary *_cookies;
-}
+@interface LCHTTPConnection : NSObject <NSURLConnectionDelegate>
 
+@property NSMutableArray* responseCookies;
 + (LCHTTPConnection *)sharedZZHTTPConnection;
 - (NSString *)get:(NSString *)urlString;
 - (NSString*)post:(NSString*)urlString withBody:(NSString *)bodyData;
