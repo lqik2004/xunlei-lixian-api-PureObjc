@@ -21,8 +21,6 @@
 		020E1F7215DCF5A900FF99ED /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E1F7015DCF5A900FF99ED /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		022D2F9C15C6DAEA003FC27E /* RegexKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 022D2F9A15C6DAEA003FC27E /* RegexKitLite.h */; };
 		022D2F9D15C6DAEA003FC27E /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 022D2F9B15C6DAEA003FC27E /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		026EB2D215C54C5A0005909F /* ZZHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 026EB2D015C54C5A0005909F /* ZZHTTPConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		026EB2D315C54C5A0005909F /* ZZHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 026EB2D115C54C5A0005909F /* ZZHTTPConnection.m */; };
 		02C0669B15DCF64B008AF890 /* ASICacheDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 02C0668715DCF64B008AF890 /* ASICacheDelegate.h */; };
 		02C0669C15DCF64B008AF890 /* ASIDataCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 02C0668815DCF64B008AF890 /* ASIDataCompressor.h */; };
 		02C0669D15DCF64B008AF890 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C0668915DCF64B008AF890 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -51,6 +49,10 @@
 		02F155D615C547220054EF51 /* TondarAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F155B815C547220054EF51 /* TondarAPI.framework */; };
 		02F155DC15C547220054EF51 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 02F155DA15C547220054EF51 /* InfoPlist.strings */; };
 		02F155DF15C547220054EF51 /* TondarAPITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F155DE15C547220054EF51 /* TondarAPITests.m */; };
+		A81275021622B2A2002A92F4 /* LCHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = A81275001622B2A2002A92F4 /* LCHTTPConnection.h */; };
+		A81275031622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
+		A81275041622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
+		A81275051622B2A2002A92F4 /* LCHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A81275011622B2A2002A92F4 /* LCHTTPConnection.m */; };
 		A83FEE7D15E3E23900FD8907 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = A83FEE7915E3E23900FD8907 /* NSData+Base64.h */; };
 		A83FEE7E15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
 		A83FEE7F15E3E23900FD8907 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */; };
@@ -94,8 +96,6 @@
 		020E1F7015DCF5A900FF99ED /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = JSONKit/JSONKit.m; sourceTree = "<group>"; };
 		022D2F9A15C6DAEA003FC27E /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		022D2F9B15C6DAEA003FC27E /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
-		026EB2D015C54C5A0005909F /* ZZHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZHTTPConnection.h; sourceTree = "<group>"; };
-		026EB2D115C54C5A0005909F /* ZZHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZZHTTPConnection.m; sourceTree = "<group>"; };
 		02C0668715DCF64B008AF890 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
 		02C0668815DCF64B008AF890 /* ASIDataCompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDataCompressor.h; sourceTree = "<group>"; };
 		02C0668915DCF64B008AF890 /* ASIDataCompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDataCompressor.m; sourceTree = "<group>"; };
@@ -131,6 +131,8 @@
 		02F155DB15C547220054EF51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		02F155DD15C547220054EF51 /* TondarAPITests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TondarAPITests.h; sourceTree = "<group>"; };
 		02F155DE15C547220054EF51 /* TondarAPITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TondarAPITests.m; sourceTree = "<group>"; };
+		A81275001622B2A2002A92F4 /* LCHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCHTTPConnection.h; sourceTree = "<group>"; };
+		A81275011622B2A2002A92F4 /* LCHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCHTTPConnection.m; sourceTree = "<group>"; };
 		A83FEE7915E3E23900FD8907 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		A83FEE7A15E3E23900FD8907 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		A83FEE7B15E3E23900FD8907 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
@@ -222,7 +224,7 @@
 			isa = PBXGroup;
 			children = (
 				A83FEE8415E3E23D00FD8907 /* Base64 */,
-				02C066BF15DCFB22008AF890 /* ZZHTTPConnection */,
+				02C066BF15DCFB22008AF890 /* LCHTTPConnection */,
 				02C066BD15DCFB1A008AF890 /* RegexKitLite */,
 				020E1F7315DCF5AB00FF99ED /* JSONKit */,
 				020E1F5E15DCF4C100FF99ED /* ASIHTTPRequest */,
@@ -260,13 +262,13 @@
 			name = RegexKitLite;
 			sourceTree = "<group>";
 		};
-		02C066BF15DCFB22008AF890 /* ZZHTTPConnection */ = {
+		02C066BF15DCFB22008AF890 /* LCHTTPConnection */ = {
 			isa = PBXGroup;
 			children = (
-				026EB2D015C54C5A0005909F /* ZZHTTPConnection.h */,
-				026EB2D115C54C5A0005909F /* ZZHTTPConnection.m */,
+				A81275001622B2A2002A92F4 /* LCHTTPConnection.h */,
+				A81275011622B2A2002A92F4 /* LCHTTPConnection.m */,
 			);
-			name = ZZHTTPConnection;
+			name = LCHTTPConnection;
 			sourceTree = "<group>";
 		};
 		02F155AC15C547220054EF51 = {
@@ -393,7 +395,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				026EB2D215C54C5A0005909F /* ZZHTTPConnection.h in Headers */,
 				020E1F4B15DCF40B00FF99ED /* HYXunleiLixianAPI.h in Headers */,
 				020E1F5C15DCF46B00FF99ED /* XunleiItemInfo.h in Headers */,
 				022D2F9C15C6DAEA003FC27E /* RegexKitLite.h in Headers */,
@@ -416,6 +417,7 @@
 				A83FEE7D15E3E23900FD8907 /* NSData+Base64.h in Headers */,
 				A83FEE8015E3E23900FD8907 /* NSString+Base64.h in Headers */,
 				A83FEE8715E3E2AA00FD8907 /* ConvertURL.h in Headers */,
+				A81275021622B2A2002A92F4 /* LCHTTPConnection.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,7 +568,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				026EB2D315C54C5A0005909F /* ZZHTTPConnection.m in Sources */,
 				022D2F9D15C6DAEA003FC27E /* RegexKitLite.m in Sources */,
 				020E1F4C15DCF40B00FF99ED /* HYXunleiLixianAPI.m in Sources */,
 				020E1F5115DCF41500FF99ED /* md5.m in Sources */,
@@ -585,6 +586,7 @@
 				A83FEE7E15E3E23900FD8907 /* NSData+Base64.m in Sources */,
 				A83FEE8115E3E23900FD8907 /* NSString+Base64.m in Sources */,
 				A83FEE8815E3E2AA00FD8907 /* ConvertURL.m in Sources */,
+				A81275031622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +599,7 @@
 				A83FEE7F15E3E23900FD8907 /* NSData+Base64.m in Sources */,
 				A83FEE8215E3E23900FD8907 /* NSString+Base64.m in Sources */,
 				A83FEE8915E3E2AA00FD8907 /* ConvertURL.m in Sources */,
+				A81275041622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +608,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A83FEE9D15E3E5EF00FD8907 /* URLTesting.m in Sources */,
+				A81275051622B2A2002A92F4 /* LCHTTPConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
