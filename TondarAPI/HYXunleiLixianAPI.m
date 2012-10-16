@@ -782,19 +782,19 @@ typedef enum {
         }
         [idString appendString:@","];
     }
-    NSString *encodeIDString=[URlEncode encodeToPercentEscapeString:idString];
-    NSString *tmp=[URlEncode encodeToPercentEscapeString:@","];
-    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_delete?type=2&taskids=%@&old_idlist=&databases=0%@&old_databaselist=&",encodeIDString,tmp];
+    NSString *jsonString=[NSString stringWithFormat:@"jsonp%@",[self _currentTimeString]];
+    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_delete?callback=%@&type=2",jsonString];
     NSLog(@"%@",urlString);
     NSURL *url=[NSURL URLWithString:urlString];
     LCHTTPConnection *request=[LCHTTPConnection new];
-    NSString *requestString=[request get:[url absoluteString]];
-    if (requestString) {
-        NSString *re=@"^delete_task_resp\\((.+)\\)$";
-        NSNumber *result=[[[requestString stringByMatching:re capture:1] objectFromJSONString] objectForKey:@"result"];
-        if(result && ([result intValue]==1)){
-            returnResult=YES;
-        }
+    NSMutableString *IDs_postdata=[[ids componentsJoinedByString:@","] mutableCopy];
+    [IDs_postdata appendString:@","];
+    NSString *databasesID_postdata=@"0,";
+    [request setPostValue:IDs_postdata forKey:@"taskids"];
+    [request setPostValue:databasesID_postdata forKey:@"databases"];
+    NSString *requestString=[request post:[url absoluteString]];
+    if ([requestString hasSuffix:@"({\"result\":1,\"type\":2})"]) {
+        returnResult=YES;
     }
     return returnResult;
 }
