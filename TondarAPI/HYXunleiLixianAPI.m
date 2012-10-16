@@ -182,16 +182,17 @@ typedef enum {
 //从cookies中取得指定名称的值
 -(NSString *) cookieValueWithName:(NSString *)aName{
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *value;
+    NSString *value=nil;
     for(NSHTTPCookie *cookie in [cookieJar cookies]){
-        //        NSLog(@"%@",cookie);
+        if([cookie.domain hasSuffix:@".xunlei.com"]){
+//                NSLog(@"%@",cookie);
         if([aName isEqualToString:@"gdriveid"] && [cookie.domain hasSuffix:@".xunlei.com"] && [cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
         }
         if([cookie.name compare:aName]==NSOrderedSame){
             value=cookie.value;
             //            NSLog(@"%@:%@",aName,value);
-        }
+        }}
     }
     return value;
 }
@@ -352,9 +353,13 @@ typedef enum {
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     //设置lx_nf_all Cookie
     //不得不喷一下这个东西了，不设置这个Cookie，返回网页有问题，不是没有内容，而是他妈的不全，太傻逼了，浪费了我一个小时的时间
-    //而且这个东西只是再查询“已经删除”和“已经过期”才会用
+    //而且这个东西只是再查询“已经删除”和“已经过期”才会用，如果在非这两种状态下使用这个Cookies也会出现显示网页不全的问题。
     //迅雷离线的网页怎么做的，飘忽不定
-    [self setCookieWithKey:@"lx_nf_all" Value:@"page_check_all%3Dhistory%26fltask_all_guoqi%3D1%26class_check%3D0%26page_check%3Dtask%26fl_page_id%3D0%26class_check_new%3D0%26set_tab_status%3D11"];
+    if(listtype==TLTOutofDate||listtype==TLTDeleted){
+        [self setCookieWithKey:@"lx_nf_all" Value:@"page_check_all%3Dhistory%26fltask_all_guoqi%3D1%26class_check%3D0%26page_check%3Dtask%26fl_page_id%3D0%26class_check_new%3D0%26set_tab_status%3D11"];
+    }else{
+        [self setCookieWithKey:@"lx_nf_all" Value:@""];
+    }
     
     if(![self cookieValueWithName:@"lx_login"]){
         //完善所需要的cookies，并收到302响应跳转
@@ -370,7 +375,7 @@ typedef enum {
         LCHTTPConnection *request=[LCHTTPConnection new];
         siteData=[request get:[taskURL absoluteString]];
     }
-    //    NSLog(@"data:%@",siteData);
+//    NSLog(@"data:%@",siteData);
     //当得到返回数据且得到真实可用的列表信息（不是502等错误页面）时进行下一步
     NSString *gdriveid=[ParseElements GDriveID:siteData];
     if (siteData&&(gdriveid.length>0)) {
