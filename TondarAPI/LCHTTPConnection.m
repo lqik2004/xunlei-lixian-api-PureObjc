@@ -85,6 +85,88 @@
 	[[self postData] addObject:keyValuePair];
 }
 
+
+//发送POST请求
+- (NSString*)postBTFile:(NSString*)filePath {
+    
+    NSString *fileName = [[filePath componentsSeparatedByString:@"/"] lastObject];
+    
+    NSData *torrentData = [NSData dataWithContentsOfFile:filePath];
+    
+    NSMutableURLRequest *_urlRequest = [[NSMutableURLRequest alloc] init];
+    
+    [_urlRequest setURL:[NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/torrent_upload"]];
+    [_urlRequest addValue:@"User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2" forHTTPHeaderField:@"User-Agent"];
+    [_urlRequest addValue:@"http://lixian.vip.xunlei.com/" forHTTPHeaderField:@"Referer"];
+    [_urlRequest setHTTPMethod:@"POST"];
+    NSString *boundary = [[[[[NSProcessInfo processInfo] globallyUniqueString] componentsSeparatedByString:@"-"] componentsJoinedByString:@""] lowercaseString];
+    NSString *boundaryString = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [_urlRequest addValue:boundaryString forHTTPHeaderField:@"Content-Type"];
+    
+    // define boundary separator...
+    NSString *boundarySeparator = [NSString stringWithFormat:@"--%@\r\n", boundary];
+    //adding the body...
+    NSMutableData *postBody = [NSMutableData data];
+    
+    // Adds post data
+	NSString *endItemBoundary = [NSString stringWithFormat:@"\r\n--%@\r\n",boundary];
+    NSString *finalItemBoundary = [NSString stringWithFormat:@"\r\n--%@--\r\n",boundary];
+    
+    // header
+    [postBody appendData:[boundarySeparator dataUsingEncoding:NSUTF8StringEncoding]];
+    [postBody appendData:[(NSString*)[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"filepath\";\r\nfilename=\"%@\"\r\nContent-Type: application/x-bittorrent\r\n\r\n", fileName] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // torrent data
+    [postBody appendData:torrentData];
+    [postBody appendData:[endItemBoundary dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // timestamp????
+    [postBody appendData:[@"Content-Disposition: form-data; name=\"random\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [postBody appendData:[[self _currentTimeString] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postBody appendData:[endItemBoundary dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // tasksign？？？
+    [postBody appendData:[@"Content-Disposition: form-data; name=\"interfrom\"\r\n\r\ntask" dataUsingEncoding:NSUTF8StringEncoding]];
+    [postBody appendData:[finalItemBoundary dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSMutableString *cookie_str = [[NSMutableString alloc] init];
+    for(NSHTTPCookie *cookie in [cookieJar cookies]){
+        if([cookie.domain hasSuffix:@".xunlei.com"]){
+            [cookie_str setString:[cookie_str stringByAppendingFormat:@"%@=%@; ", cookie.name, cookie.value]];
+        }
+    }
+    [_urlRequest setValue:cookie_str forHTTPHeaderField:@"Cookie"];
+    
+    [_urlRequest setHTTPBody:postBody];
+    
+    NSHTTPURLResponse* urlResponse = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:_urlRequest returningResponse:&urlResponse error:NULL];
+    NSString *responseResult = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    if ([[urlResponse allHeaderFields] objectForKey:@"Set-Cookie"]) {
+        NSArray *cookies=[NSHTTPCookie cookiesWithResponseHeaderFields:[urlResponse allHeaderFields] forURL:[NSURL URLWithString:@".vip.xunlei.com"]];
+        for(NSHTTPCookie *t in cookies){
+            [self setCookieWithKey:t.name Value:t.value];
+        }
+    }
+    if ([urlResponse statusCode] >= 200 && [urlResponse statusCode] < 400)
+		return responseResult;
+    else
+        return nil;
+}
+
+
+//取得当前UTC时间，并转换成13位数字字符
+-(NSString *) _currentTimeString{
+    double UTCTime=[[NSDate date] timeIntervalSince1970];
+    NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
+    NSLog(@"%@",currentTime);
+    currentTime=[[currentTime componentsSeparatedByString:@"."] objectAtIndex:0];
+    
+    return currentTime;
+}
+
 //发送POST请求
 - (NSString*)post:(NSString*)urlString withBody:(NSString *)bodyData{
     
