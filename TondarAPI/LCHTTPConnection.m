@@ -77,7 +77,9 @@
 		return;
 	}
 	if (![self postData]) {
-		[self setPostData:[NSMutableArray array]];
+        
+        // 在ios真机测试的时候。不用这种模式初始化array会导致数据append失败。
+		postData = [[NSMutableArray alloc] initWithCapacity:0];
 	}
 	NSMutableDictionary *keyValuePair = [NSMutableDictionary dictionaryWithCapacity:2];
 	[keyValuePair setValue:key forKey:@"key"];

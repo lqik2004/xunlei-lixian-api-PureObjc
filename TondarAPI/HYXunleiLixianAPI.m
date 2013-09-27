@@ -637,34 +637,6 @@ typedef enum {
 }
 
 - (NSDictionary *)fetchBTFileList:(NSString *)filePath {
-/*
-    NSData *encodedData = [[NSData alloc] initWithContentsOfFile:filePath];
-    
-    OrderedDictionary *decodedData = [BEncoding objectFromEncodedData:encodedData];
-    
-    // BEncoding经常抽风。。加个循环保证一下。传到服务器来获取文件列表的话似乎有些问题。所以这里还是采用BEncoding。谁有更好的办法么。。。
-    while (![[decodedData objectForKey:@"info"] objectForKey:@"files"]) {
-        decodedData = [BEncoding objectFromEncodedData:encodedData];
-    }
-    NSArray *dataName = [[[decodedData objectForKey:@"info"] objectForKey:@"files"] valueForKey:@"path"];
-    NSArray *dataLength = [[[decodedData objectForKey:@"info"] objectForKey:@"files"] valueForKey:@"length"];
-    if (dataName.count > 0 && dataLength.count > 0) {
-        NSMutableArray *files = [[NSMutableArray alloc] init];
-        for (int i = 0; i < dataName.count; i++) {
-            NSData *subData = [dataName[i] objectAtIndex:0];
-            //            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-            NSString *str = [[NSString alloc] initWithData:subData encoding:NSUTF8StringEncoding];
-            
-            [files addObject:@{@"fileName": str,
-                               @"fileSize": [self fileSize:[dataLength[i] floatValue]]}];
-        }
-        return files;
-    } else {
-        NSData *subData = [[decodedData objectForKey:@"info"] valueForKey:@"name"];
-        NSString *str = [[NSString alloc] initWithData:subData encoding:NSUTF8StringEncoding];
-        return [[NSMutableArray alloc] initWithObjects:@{@"fileName": str,
-                                                               @"fileSize": [self fileSize:[[[decodedData objectForKey:@"info"] valueForKey:@"length"] floatValue]]}, nil];
-    }*/
     
     LCHTTPConnection *request=[LCHTTPConnection new];
     NSString *postResult = [request postBTFile:filePath];
