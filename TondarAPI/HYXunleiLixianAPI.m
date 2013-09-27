@@ -69,6 +69,7 @@ typedef enum {
     [request post:[url absoluteString]];
     //把response中的Cookie添加到CookieStorage
     [self _addResponseCookietoCookieStorage:[request responseCookies]];
+    
     //完善所需要的cookies，并收到302响应跳转
     NSString *timeStamp=[self _currentTimeString];
     NSURL *redirectUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/login?cachetime=%@&cachetime=%@&from=0",timeStamp,timeStamp]];
@@ -125,6 +126,7 @@ typedef enum {
     return vCode;
 }
 
+
 /*
  *迅雷的登陆会过期，有时需要检验一下是否登陆。
  *现在采用的方法比较“重”，效率可能会低一些，但更稳妥直接
@@ -134,6 +136,7 @@ typedef enum {
 -(BOOL) isLogin{
     BOOL result=NO;
     if([self _tasksWithStatus:TLTComplete]){
+        NSLog(@"Thunder Login Successfully");
         result=YES;
     }
     return result;
@@ -296,19 +299,19 @@ typedef enum {
     NSURL *url;
     switch (listType) {
         case TLTAll:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=0&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=0&p=%lu",userid,(unsigned long)pg]];
             break;
         case TLTComplete:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=2&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=2&p=%lu",userid,(unsigned long)pg]];
             break;
         case TLTDownloadding:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=1&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_task?userid=%@&st=1&p=%lu",userid,(unsigned long)pg]];
             break;
         case TLTOutofDate:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=1&userid=%@&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=1&userid=%@&p=%lu",userid,(unsigned long)pg]];
             break;
         case TLTDeleted:
-            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=0&userid=%@&p=%ld",userid,pg]];
+            url=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/user_history?type=0&userid=%@&p=%lu",userid,(unsigned long)pg]];
             break;
         default:
             break;
@@ -464,7 +467,7 @@ typedef enum {
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
     NSString *userid=[self userID];
     NSString *currentTimeStamp=[self _currentTimeString];
-    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=%lu&uid=%@&noCacheIE=%@",taskid,dcid,pg,userid,currentTimeStamp];
+    NSString *urlString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%@&infoid=%@&g_net=1&p=%lu&uid=%@&noCacheIE=%@",taskid,dcid,(unsigned long)pg,userid,currentTimeStamp];
     NSURL *url=[NSURL URLWithString:urlString];
     //获取BT task页面内容
     LCHTTPConnection *request=[LCHTTPConnection new];
@@ -529,7 +532,7 @@ typedef enum {
     NSString* aUserID=[self userID];
     //初始化返回Array
     NSMutableArray *elements=[[NSMutableArray alloc] initWithCapacity:0];
-    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/cloud?userid=%@&p=%ld",aUserID,pg]];
+    NSURL *requestURL=[NSURL URLWithString:[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/cloud?userid=%@&p=%ld",aUserID,(unsigned long)pg]];
     LCHTTPConnection *request=[LCHTTPConnection new];
     NSString* data=[request get:[requestURL absoluteString]];
     if(data){
@@ -575,6 +578,111 @@ typedef enum {
     }else {
         return nil;
     }
+}
+
+#pragma mark - Add BT
+//本来不想加最后那个param的。。但是貌似重复上传文件但没有后续操作会导致添加文件失败。所以就加了这个。获取数据后，把dictionary填到最后一个位置就可以了
+//请注意selection的这个array里面存着的是findex
+
+- (NSString *)addBTTask:(NSString *)filePath selection:(NSArray *)array hasFetchedFileList:(NSDictionary *)dataField {
+    if (array.count > 0) {
+        if (dataField == nil) {
+            dataField = [self fetchBTFileList:filePath];
+        }
+        
+        int ret_value = [dataField[@"ret_value"] intValue];
+        
+        // ret value等于0就是失败啊，目前只看到出现过1，不知道会不会有别的值。所以这里先用不等于0作为判断。
+        
+        if (ret_value != 0) {
+            
+            NSString *dcid = dataField[@"infoid"];
+            NSString *tsize = dataField[@"btsize"];
+            NSString *btname = dataField[@"ftitle"];
+            NSArray *fileList = dataField[@"filelist"];
+            //    NSString *random = dataField[@"random"];
+            //
+            
+            //提交任务
+            NSURL *commitURL = [NSURL URLWithString:@"http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"];
+            LCHTTPConnection* commitRequest = [LCHTTPConnection new];
+            
+            NSArray *subSizes = [fileList valueForKey:@"subsize"];
+            
+            NSMutableArray *sizeArray = [[NSMutableArray alloc] init];
+            for (NSString *select in array) {
+                NSInteger index = [[fileList valueForKey:@"findex"] indexOfObject:select];
+                [sizeArray addObject:subSizes[index]];
+            }
+            
+            [commitRequest setPostValue:[self userID] forKey:@"uid"];
+            [commitRequest setPostValue:[URlEncode encodeToPercentEscapeString:btname] forKey:@"btname"];
+            [commitRequest setPostValue:dcid forKey:@"cid"];
+            [commitRequest setPostValue:@"0" forKey:@"goldbean"];
+            [commitRequest setPostValue:@"0" forKey:@"silverbean"];
+            [commitRequest setPostValue:tsize forKey:@"tsize"];
+            [commitRequest setPostValue:[array componentsJoinedByString:@"_"] forKey:@"findex"];
+            [commitRequest setPostValue:[sizeArray componentsJoinedByString:@"_"] forKey:@"size"];
+            [commitRequest setPostValue:@"0" forKey:@"o_taskid"];
+            [commitRequest setPostValue:@"task" forKey:@"o_page"];
+            [commitRequest setPostValue:@"0" forKey:@"class_id"];
+            [commitRequest setPostValue:@"task" forKey:@"interfrom"];
+            [commitRequest post:[commitURL absoluteString]];
+            return dcid;
+            
+        }
+    }
+    
+    return nil;
+}
+
+- (NSDictionary *)fetchBTFileList:(NSString *)filePath {
+    
+    LCHTTPConnection *request=[LCHTTPConnection new];
+    NSString *postResult = [request postBTFile:filePath];
+    
+    postResult = [postResult stringByReplacingOccurrencesOfString:@"<script>document.domain=\"xunlei.com\";var btResult =" withString:@""];
+    postResult = [postResult stringByReplacingOccurrencesOfString:@";var btRtcode = 0</script>" withString:@""];
+    
+    NSDictionary *dataField = [NSJSONSerialization JSONObjectWithData:[postResult dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: nil];
+    
+    return dataField;
+}
+
+- (NSString *)fileSize:(float)size {
+    int counter = 0;
+    while (size > 1000) {
+        size /= 1000;
+        counter++;
+    }
+    
+    NSString *size_type = @"Bytes";
+    switch (counter) {
+        case 1:
+            size_type = @"KB";
+            break;
+            
+        case 2:
+            size_type = @"MB";
+            break;
+            
+        case 3:
+            size_type = @"GB";
+            break;
+            
+        case 4:
+            size_type = @"TB";
+            break;
+            
+        case 5:
+            size_type = @"PB";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return [NSString stringWithFormat:@"%.2f %@", size, size_type];
 }
 
 
@@ -654,6 +762,7 @@ typedef enum {
     return dcid;
 }
 
+
 //add normal task(http,ed2k...)
 //返回dcid作为文件标示
 -(NSString *) addNormalTask:(NSString *)url{
@@ -678,6 +787,8 @@ typedef enum {
     NSString *someKey=@"";
     NSString *taskType=@"";
     NSString *userid=@"";
+    NSString *noCacheIE = @"";
+    NSString *unknownData = @"";
     
     userid=[self userID];
     
@@ -732,18 +843,48 @@ typedef enum {
         is_full=[newData objectAtIndex:7];
         random=[newData objectAtIndex:8];
         ext=[newData objectAtIndex:9];
+    } else if (data.count == 11) {
+        dcid=[newData objectAtIndex:0];
+        gcid=[newData objectAtIndex:1];
+        size=[newData objectAtIndex:2];
+        someKey=[newData objectAtIndex:3];
+        filename=[newData objectAtIndex:4];
+        goldbeen=[newData objectAtIndex:5];
+        silverbeen=[newData objectAtIndex:6];
+        is_full=[newData objectAtIndex:7];
+        noCacheIE=[newData objectAtIndex:8];
+        ext=[newData objectAtIndex:9];
+        unknownData = newData[10];
+        
     }
     //filename如果是中文放到URL中会有编码问题，需要转码
     NSString *newFilename=[URlEncode encodeToPercentEscapeString:filename];
     
+    double UTCTime=[[NSDate date] timeIntervalSince1970];
+    NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
     
-    NSString *commitString=[NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%@&cid=%@&gcid=%@&size=%@&goldbean=%@&silverbean=%@&t=%@&url=%@&type=%@&o_page=task&o_taskid=0",userid,dcid,gcid,size,goldbeen,silverbeen,newFilename,enUrl,taskType];
+    NSString *commitString1 = [NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%@&interfrom=task&random=%@&tcache=%@", enUrl, currentTime,timestamp];
+    
+    NSString *commitString2 = [NSString stringWithFormat:@"http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%@&cid=%@&gcid=%@&size=%@&goldbean=%@&silverbean=%@&t=%@&url=%@&type=%@&o_page=history&o_taskid=0&class_id=0&database=undefined&interfrom=task&noCacheIE=%@",userid,dcid,gcid,size,goldbeen,silverbeen,newFilename,enUrl,taskType,timestamp];
+
     //NSLog(@"%@",commitString);
-    NSURL *commitURL=[NSURL URLWithString:commitString];
-    NSLog(@"%@",commitURL);
-    LCHTTPConnection *commitRequest=[LCHTTPConnection new];
-    [commitRequest get:commitString];
+    NSURL *commitURL1=[NSURL URLWithString:commitString1];
+    NSLog(@"%@",commitURL1);
+    LCHTTPConnection *commitRequest1=[LCHTTPConnection new];
+    [commitRequest1 get:commitString1];
+    
+    //NSLog(@"%@",commitString);
+    NSURL *commitURL2=[NSURL URLWithString:commitString2];
+    NSLog(@"%@",commitURL2);
+    LCHTTPConnection *commitRequest2=[LCHTTPConnection new];
+    [commitRequest2 get:commitString2];
+    
     return dcid;
+}
+
+-(unsigned long long)getRandomNumberBetween:(unsigned long long)from to:(unsigned long long)to {
+    
+    return (unsigned long long)from + arc4random() % (to-from+1);
 }
 
 #pragma mark - Delete Task
@@ -937,6 +1078,7 @@ typedef enum {
 -(NSString *) _currentTimeString{
     double UTCTime=[[NSDate date] timeIntervalSince1970];
     NSString *currentTime=[NSString stringWithFormat:@"%f",UTCTime*1000];
+    NSLog(@"%@",currentTime);
     currentTime=[[currentTime componentsSeparatedByString:@"."] objectAtIndex:0];
     
     return currentTime;

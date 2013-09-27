@@ -111,4 +111,8 @@ typedef enum{
 -(NSArray*) getKuaiItemInfos:(NSURL*) kuaiURL;
 //添加快传页面的连接到迅雷离线
 -(BOOL) addAllKuaiTasksToLixianByURL:(NSURL*) kuaiURL;
+// 添加BT任务
+- (NSString *)addBTTask:(NSString *)filePath selection:(NSArray *)array hasFetchedFileList:(NSDictionary *)dataField;
+- (NSDictionary *)fetchBTFileList:(NSString *)filePath;
+- (NSString *)fileSize:(float)size; //一个根据length返回文件大小的方法
 @end

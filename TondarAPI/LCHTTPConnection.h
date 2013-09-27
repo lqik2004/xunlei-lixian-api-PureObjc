@@ -16,4 +16,5 @@
 - (NSString*)post:(NSString*)urlString withBody:(NSString *)bodyData;
 -(NSString*) post:(NSString*) urlString;
 -(void) setPostValue:(NSString*) key forKey:(NSString*) value;
+- (NSString*)postBTFile:(NSString*)filePath;
 @end
